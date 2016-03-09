@@ -2,8 +2,6 @@ package com.example.android.cz3002project;
 
 import android.support.v7.app.ActionBarActivity;
 
-
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +13,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Game3 extends ActionBarActivity {
     TextView mStatusView;
     MediaRecorder mRecorder;
     Thread runner;
     private static double mEMA = 0.0;
     static final private double EMA_FILTER = 0.6;
+    public int seconds = 00;
+    public int minutes = 1;
+
 
     final Runnable updater = new Runnable(){
 
@@ -29,6 +33,7 @@ public class Game3 extends ActionBarActivity {
         };
     };
     final Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +61,31 @@ public class Game3 extends ActionBarActivity {
             runner.start();
             Log.d("Noise", "start runner()");
         }
+
+        // Declare the timer
+        Timer t = new Timer();
+
+        // Set the schedule function and rate
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView tv = (TextView) findViewById(R.id.game3TextViewTimer);
+                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+
+                        if (seconds == 0) {
+                            tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                            seconds = 60;
+                            minutes -= 1;
+                        }
+                        seconds -= 1;
+                    }
+                });
+            }
+        }, 0, 1000);
     }
 
     @Override
