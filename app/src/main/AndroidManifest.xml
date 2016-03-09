@@ -24,6 +24,10 @@
             android:name=".LogIn"
             android:label="@string/title_activity_log_in" >
         </activity>
+        <activity
+            android:name=".Menu"
+            android:label="@string/title_activity_menu" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.android.cz3002project.Menu">
+
+    <TextView android:text="Menu" android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" android:gravity="center" android:textStyle="bold"
+        android:textSize="@dimen/abc_text_size_large_material" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp" android:layout_weight="4"
+        android:src="@drawable/maxresdefault"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/menuButtonPlayGames"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Play Games"
+        android:layout_margin="@dimen/abc_action_bar_content_inset_material"
+        android:background="@drawable/roundedbutton"/>
+
+    <Button
+        android:id="@+id/menuButtonSetReminder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Set Reminder"
+        android:layout_margin="@dimen/abc_action_bar_content_inset_material"
+        android:background="@drawable/roundedbutton"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>
