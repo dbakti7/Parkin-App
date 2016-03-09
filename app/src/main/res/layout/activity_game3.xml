@@ -9,13 +9,16 @@
 
 
     <TextView android:text="Voice The Words!" android:layout_width="match_parent"
+        android:textSize="42sp"
         android:layout_height="0dp"
-        android:layout_weight="1" android:gravity="center" android:textStyle="bold"
-        android:textSize="@dimen/abc_text_size_large_material" />
+        android:layout_weight="1" android:gravity="center" android:textStyle="bold" />
 
     <TextView
         android:id="@+id/game3TextViewTimer"
         android:text="Timer here"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:textColor="@color/material_blue_grey_800"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,26 +28,14 @@
         android:id="@+id/status"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:textSize="30sp"
         android:gravity="center"/>
+
     <TextView android:text="Make your voice as loud as possible!" android:layout_width="match_parent"
+        android:textSize="24sp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start" android:id="@+id/startRecording"
-        android:onClick="startRecorder"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="stop" android:id="@+id/stopRecording"
-        android:onClick="stopRecorder"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="stop" android:id="@+id/getAmp"
-        android:onClick="updateTv"/>
 
 </LinearLayout>
