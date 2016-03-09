@@ -28,6 +28,10 @@
             android:name=".Menu"
             android:label="@string/title_activity_menu" >
         </activity>
+        <activity
+            android:name=".SetReminder"
+            android:label="@string/title_activity_set_reminder" >
+        </activity>
     </application>
 
 </manifest>
