@@ -6,7 +6,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <TextView android:text="Join The Fun!" android:layout_width="match_parent"
+    <TextView android:text="Sign Up" android:layout_width="match_parent"
     android:layout_height="0dp"
         android:layout_weight="1" android:gravity="center" android:textStyle="bold"
     android:textSize="@dimen/abc_text_size_large_material" />
@@ -57,6 +57,7 @@
         android:layout_weight="1"/>
 
     <Button
+        android:id="@+id/signUpButtonSignUp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
