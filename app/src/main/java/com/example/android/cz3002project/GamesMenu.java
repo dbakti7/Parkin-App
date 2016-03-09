@@ -8,18 +8,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class MainActivity extends ActionBarActivity {
+public class GamesMenu extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_games_menu);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_games_menu, menu);
         return true;
     }
 
@@ -38,21 +38,11 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void SignUp(View view)
+    public void PlayGame3(View view)
     {
-        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+        Intent intent = new Intent(GamesMenu.this, Game3.class);
         startActivity(intent);
     }
 
-    public void LogIn(View view)
-    {
-        Intent intent = new Intent(MainActivity.this, LogIn.class);
-        startActivity(intent);
-    }
 
-    public void PlayGames(View view)
-    {
-        Intent intent = new Intent(MainActivity.this, GamesMenu.class);
-        startActivity(intent);
-    }
 }

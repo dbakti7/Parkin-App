@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.cz3002project" >
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,6 +32,15 @@
             android:name=".SetReminder"
             android:label="@string/title_activity_set_reminder" >
         </activity>
+        <activity
+            android:name=".GamesMenu"
+            android:label="@string/title_activity_games_menu" >
+        </activity>
+        <activity
+            android:name=".Game3"
+            android:label="@string/title_activity_game3" >
+        </activity>
     </application>
 
 </manifest>
+

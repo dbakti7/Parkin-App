@@ -7,4 +7,6 @@
     <string name="title_activity_log_in">LogIn</string>
     <string name="title_activity_menu">Menu</string>
     <string name="title_activity_set_reminder">SetReminder</string>
+    <string name="title_activity_games_menu">GamesMenu</string>
+    <string name="title_activity_game3">Game3</string>
 </resources>

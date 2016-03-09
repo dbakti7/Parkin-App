@@ -53,10 +53,13 @@
             android:layout_weight="0.1"/>
 
         <Button
+            android:id="@+id/homeButtonPlayGames"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundedbutton"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Play Games"
+            android:onClick="PlayGames"/>
 
         <TextView
             android:layout_width="0dp"
