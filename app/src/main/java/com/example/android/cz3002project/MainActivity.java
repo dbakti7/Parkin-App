@@ -1,9 +1,11 @@
 package com.example.android.cz3002project;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -34,5 +36,17 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void SignUp(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+        startActivity(intent);
+    }
+
+    public void LogIn(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, LogIn.class);
+        startActivity(intent);
     }
 }

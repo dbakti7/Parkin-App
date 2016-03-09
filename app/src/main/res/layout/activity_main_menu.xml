@@ -5,7 +5,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.android.cz3002project.Menu">
+    tools:context="com.example.android.cz3002project.MainMenu">
 
     <TextView android:text="Menu" android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -38,7 +38,8 @@
         android:layout_weight="1"
         android:text="Set Reminder"
         android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-        android:background="@drawable/roundedbutton"/>
+        android:background="@drawable/roundedbutton"
+        android:onClick="SetReminder"/>
 
     <TextView
         android:layout_width="match_parent"
