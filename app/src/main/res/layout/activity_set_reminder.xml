@@ -22,11 +22,35 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"/>
 
-    <NumberPicker
-        android:id="@+id/setReminderNumberPickerNP"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"></NumberPicker>
+        android:layout_weight="5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+
+        <NumberPicker
+            android:id="@+id/setReminderNumberPickerNP"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+        </NumberPicker>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+
+
+    </LinearLayout>
+
 
     <TextView android:id="@+id/setReminderTextViewDays"
         android:text="Days" android:layout_width="match_parent"
