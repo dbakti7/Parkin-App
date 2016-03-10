@@ -1,5 +1,6 @@
 package com.example.android.cz3002project;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -25,11 +27,15 @@ public class Game3 extends ActionBarActivity {
     public int seconds = 00;
     public int minutes = 1;
 
+    private ProgressBar progressBar;
+    private double progressBarStatus = 0;
+    private Handler progressBarHandler = new Handler();
+
 
     final Runnable updater = new Runnable(){
 
         public void run(){
-            updateDb();
+            //updateDb();
         };
     };
     final Handler mHandler = new Handler();
@@ -86,7 +92,62 @@ public class Game3 extends ActionBarActivity {
                 });
             }
         }, 0, 1000);
+
+
+        // Animation bar
+
+        // prepare for a progress bar dialog
+        progressBar = (ProgressBar) findViewById(R.id.game3ProgressBarPB);
+        progressBar.setProgress(0);
+        progressBar.setMax(100);
+
+        //reset progress bar status
+        progressBarStatus = 0;
+
+
+        new Thread(new Runnable() {
+            public void run() {
+                while (progressBarStatus < 100) {
+
+                    // process some tasks
+                    progressBarStatus = doSomeTasks();
+
+                    // your computer is too fast, sleep 1 second
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Update the progress bar
+                    progressBarHandler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress((int)progressBarStatus);
+                        }
+                    });
+                }
+
+                // ok, file is downloaded,
+                if (progressBarStatus >= 100) {
+
+                    // sleep 2 seconds, so that you can see the 100%
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // close the progress bar dialog
+                }
+            }
+        }).start();
     }
+
+
+    public double doSomeTasks() {
+        return soundDb(0.7746);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +226,8 @@ public class Game3 extends ActionBarActivity {
     public void updateDb() {
         mStatusView.setText(Double.toString(soundDb(0.7746)));
     }
+
+
 
     public double soundDb(double ampl){
         return  20 * Math.log10(getAmplitude() / ampl);
