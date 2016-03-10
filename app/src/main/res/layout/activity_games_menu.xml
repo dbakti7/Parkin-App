@@ -25,7 +25,7 @@
             android:layout_weight="1"
             android:text="Balance The Ball"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/BalancingIcon"
+            android:background="@drawable/balancingicon"
             android:onClick="PlayGame1"/>
 
         <Button
@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:text="Shape Tracing"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/ShapeTracingIcon"
+            android:background="@drawable/shapetracingicon"
             android:onClick="PlayGame2"/>
 
     </LinearLayout>
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:text="Word Voicing"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/WordVoicingIcon"
+            android:background="@drawable/wordvoicingicon"
             android:onClick="PlayGame3"/>
 
         <TextView

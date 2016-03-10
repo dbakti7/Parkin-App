@@ -43,4 +43,10 @@ public class MainMenu extends ActionBarActivity {
         Intent intent = new Intent(MainMenu.this, SetReminder.class);
         startActivity(intent);
     }
+
+    public void PlayGames(View view)
+    {
+        Intent intent = new Intent(MainMenu.this, GamesMenu.class);
+        startActivity(intent);
+    }
 }

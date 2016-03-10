@@ -50,9 +50,9 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void PlayGames(View view)
-    {
-        Intent intent = new Intent(MainActivity.this, GamesMenu.class);
+    public void SkipNow(View view) {
+        Intent intent = new Intent(MainActivity.this, MainMenu.class);
         startActivity(intent);
     }
+
 }
