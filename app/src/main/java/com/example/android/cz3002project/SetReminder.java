@@ -4,14 +4,32 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
+import android.widget.TextView;
 
 
 public class SetReminder extends ActionBarActivity {
+
+    NumberPicker np;
+    private int valueSelected = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_reminder);
+        np = (NumberPicker) findViewById(R.id.setReminderNumberPickerNP);
+        np.setMinValue(0);
+        np.setMaxValue(30);
+
+        np.setOnValueChangedListener(new OnValueChangeListener() {
+
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                // TODO Auto-generated method stub
+                valueSelected = newVal;
+            }
+        });
     }
 
     @Override

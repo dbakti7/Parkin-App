@@ -24,11 +24,12 @@
 
     <NumberPicker
         android:id="@+id/setReminderNumberPickerNP"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="5"></NumberPicker>
 
-    <TextView android:text="Days" android:layout_width="match_parent"
+    <TextView android:id="@+id/setReminderTextViewDays"
+        android:text="Days" android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2" android:gravity="center" android:textStyle="bold"
         android:textSize="40sp" />
