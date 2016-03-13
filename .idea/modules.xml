@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CZ3002Project.iml" filepath="$PROJECT_DIR$/CZ3002Project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Parkin-App.iml" filepath="$PROJECT_DIR$/Parkin-App.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
