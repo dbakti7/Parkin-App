@@ -38,6 +38,12 @@ public class GamesMenu extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void PlayGame2(View view)
+    {
+        Intent intent = new Intent(GamesMenu.this, DrawingGameActivity.class);
+        startActivity(intent);
+    }
+
     public void PlayGame3(View view)
     {
         Intent intent = new Intent(GamesMenu.this, Game3.class);

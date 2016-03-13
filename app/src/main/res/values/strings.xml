@@ -9,4 +9,5 @@
     <string name="title_activity_set_reminder">SetReminder</string>
     <string name="title_activity_games_menu">GamesMenu</string>
     <string name="title_activity_game3">Game3</string>
+    <string name="title_activity_drawing_game">DrawingGameActivity</string>
 </resources>
