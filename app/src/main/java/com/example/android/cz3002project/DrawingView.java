@@ -1,5 +1,6 @@
 package com.example.android.cz3002project;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.*;
 
 
 /**
@@ -37,22 +39,19 @@ import java.util.Random;
 public class DrawingView extends View {
 
     // 0 <= score <= 100
-    public int score = 0;
+    public int score;
 
+    //shape path
     private Path shapePath;
     private Paint shapePaint;
     private float shapeLineWidth;
     private int shapeColor = 0xFF000000;
-    private Path innerCircle;
-    private Path outerCircle;
-
-
+    private Path innerShape;
+    private Path outerShape;
 
     //drawing path
     private Path drawPath;
-    //drawing and canvas paint
     private Paint drawPaint, canvasPaint;
-    //initial color
     private int paintColor = 0xFF660000;
 
     // difference path
@@ -64,11 +63,8 @@ public class DrawingView extends View {
     // difference color
     private int differenceColor = 0xFFFF0000;
 
-
-    //canvas
-    private Canvas drawCanvas;
-    //canvas bitmap
-    private Bitmap canvasBitmap;
+    ArrayList<Point> randomPoints;
+    private boolean lastShape;
 
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
@@ -87,6 +83,8 @@ public class DrawingView extends View {
         setupDifferencePaths();
 
         randomPoints = new ArrayList<Point>();
+        score = 0;
+        lastShape = false;
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preferences.edit();
@@ -105,8 +103,8 @@ public class DrawingView extends View {
 
         shapeLineWidth = 100;
 
-        innerCircle = new Path();
-        outerCircle = new Path();
+        innerShape = new Path();
+        outerShape = new Path();
     }
 
     private void setupDrawingPath(){
@@ -138,40 +136,36 @@ public class DrawingView extends View {
         //view given size
         super.onSizeChanged(w, h, oldw, oldh);
 
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        drawCanvas = new Canvas(canvasBitmap);
+//        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+//        drawCanvas = new Canvas(canvasBitmap);
 
         float centerX = w / 2;
         float centerY = h / 2;
         float radius = w / 4;
 
+        shapePath = circlePath(centerX, centerY, radius, shapeLineWidth, innerShape, outerShape);
 
-        shapePath = circlePath(centerX, centerY, radius, shapeLineWidth, innerCircle, outerCircle);
 
-        drawCanvas.drawPath(shapePath, shapePaint);
+//        drawCanvas.drawPath(shapePath, shapePaint);
+
+        setupRandomPoints(10000, w, h);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //draw view
-        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+
+        canvas.drawPath(shapePath, shapePaint);
+
         canvas.drawPath(drawPath, drawPaint);
 
-        //canvas.drawPath(outerDifferencePath, differencePaint);
-        //canvas.drawPath(innerDifferencePath, differencePaint);
-
-//        for (Point point : randomPoints) {
-//            Rect tinyRect = new Rect(point.x, point.y, point.x + 1, point.y + 1);
-//            Paint paint = new Paint();
-//            paint.setColor(0xFF000000);
-//            paint.setAntiAlias(true);
-//            paint.setStrokeWidth(1);
-//            paint.setStyle(Paint.Style.STROKE);
-//            paint.setStrokeJoin(Paint.Join.ROUND);
-//            paint.setStrokeCap(Paint.Cap.ROUND);
+//        canvas.drawPath(outerDifferencePath, differencePaint);
 //
-//            canvas.drawRect(tinyRect, paint);
-//        }
+//        Paint innerDifferencePaint = new Paint();
+//        innerDifferencePaint.setColor(0xFF00FF00);
+//        innerDifferencePaint.setAntiAlias(true);
+//        innerDifferencePaint.setStyle(Paint.Style.FILL);
+//        canvas.drawPath(innerDifferencePath, innerDifferencePaint);
+
     }
 
     @Override
@@ -179,6 +173,8 @@ public class DrawingView extends View {
         //detect user touch
         float touchX = event.getX();
         float touchY = event.getY();
+
+        Log.d("TOUCH", "touch x:" + touchX + "y:" + touchY);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -191,56 +187,57 @@ public class DrawingView extends View {
                 drawPath.lineTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
-//                drawCanvas.drawPath(drawPath, drawPaint);
-
 //                drawPath.close();
 
-                outerDifferencePath.op(drawPath, outerCircle, Path.Op.DIFFERENCE);
-                innerDifferencePath.op(innerCircle, drawPath, Path.Op.DIFFERENCE);
+                outerDifferencePath.op(drawPath, outerShape, Path.Op.DIFFERENCE);
+                innerDifferencePath.op(innerShape, drawPath, Path.Op.DIFFERENCE);
+                double outerDifferenceArea = monteCarloArea(outerDifferencePath);
+                Log.d("MONTECARLOAREA", "outerDifferenceArea=" + outerDifferenceArea);
+                double innerDifferenceArea = monteCarloArea(innerDifferencePath);
+                Log.d("MONTECARLOAREA", "innerDifferenceArea=" + innerDifferenceArea);
+                double innerShapeArea = monteCarloArea(innerShape);
+                Log.d("MONTECARLOAREA", "innerShapeArea=" + innerShapeArea);
 
-                RectF clipRectF = new RectF();
-                outerDifferencePath.computeBounds(clipRectF, true);
-                Rect clipRect = new Rect();
-                clipRectF.roundOut(clipRect);
-                Region clip = new Region(clipRect);
+                double differenceToInnerShapeRatio = (outerDifferenceArea + innerDifferenceArea) / innerShapeArea;
+                Log.d("MONTECARLOAREA", "differenceToInnerShapeRatio=" + differenceToInnerShapeRatio);
+                double normalizedRatio = min(differenceToInnerShapeRatio, 1.0);
+                Log.d("MONTECARLOAREA", "normalizedRatio=" + normalizedRatio);
 
-                RectF clipRectF2 = new RectF();
-                innerDifferencePath.computeBounds(clipRectF2, true);
-                Rect clipRect2 = new Rect();
-                clipRectF2.roundOut(clipRect2);
-                Region clip2 = new Region(clipRect2);
+                int subscore = (int)((1.0 - normalizedRatio) * 100.0);
 
-                Region outerRegion = new Region();
-                outerRegion.setPath(outerDifferencePath, clip);
-                Rect outerRegionBounds = new Rect();
-                outerRegion.getBounds(outerRegionBounds);
-                Log.d("REGION", "outer region bounds bottom:" + outerRegionBounds.bottom + " left:" + outerRegionBounds.left + " right: " + outerRegionBounds.right + " top: " + outerRegionBounds.top);
+                Log.d("SCORE", "subscore=" + score);
 
-                Region innerRegion = new Region();
-                innerRegion.setPath(innerDifferencePath, clip2);
-                Rect innerRegionBounds = new Rect();
-                innerRegion.getBounds(innerRegionBounds);
-                Log.d("REGION", "inner region bounds bottom:" + innerRegionBounds.bottom + " left:" + innerRegionBounds.left + " right: " + innerRegionBounds.right + " top: " + innerRegionBounds.top);
+                if (lastShape) {
+                    score = (score + subscore) / 2;
+                    new UpdateScore2().execute();
+                    ((Activity)getContext()).finish();
 
+                } else {
+                    score = subscore;
 
-                float outerDifferenceArea = monteCarloArea(outerRegion);
-                Log.d("MONTECARLOAREA", "outerArea=" + outerDifferenceArea);
+                    shapePath.reset();
+                    innerShape.reset();
+                    outerShape.reset();
 
-                float innerDifferenceArea = monteCarloArea(innerRegion);
-                Log.d("MONTECARLOAREA", "innerArea=" + innerDifferenceArea);
+                    drawPath.reset();
 
-//                drawPath.reset();
+                    int viewWidth = getWidth();
+                    int viewHeight = getHeight();
+                    float centerX = viewWidth / 2;
+                    float centerY = viewHeight / 2;
+                    float triangleOuterSide = (float)(viewWidth / 1.5);
 
-                int uncorrectedScore = (int) (100 - Math.ceil(outerDifferenceArea) - Math.ceil(innerDifferenceArea));
-                score = (uncorrectedScore >= 0) ? uncorrectedScore : 0;
-                Log.d("SCORE", "score=" + score);
-                new UpdateScore2().execute();
+                    shapePath = triangleFramePath(centerX, centerY, triangleOuterSide, shapeLineWidth, innerShape, outerShape);
+                    lastShape = true;
+                }
+
                 com.example.android.cz3002project.DrawingGameActivity.scoreTextView.setText("Score: "+score);
+
                 break;
             default:
                 return false;
         }
-        Log.d("TOUCH", "touch x:" + touchX + "y:" + touchY);
+
 
         invalidate();
         return true;
@@ -259,35 +256,64 @@ public class DrawingView extends View {
         return path;
     }
 
-    ArrayList<Point> randomPoints;
+    private Path triangleFramePath(float centerX, float centerY, float outerSide, float lineWidth, Path innerTriangle, Path outerTriangle) {
+        Path path = new Path();
+        float innerSide = outerSide - (2 * lineWidth * (float)sqrt(3));
 
-    private float monteCarloArea(Region region) {
+        trianglePath(innerTriangle, centerX, centerY, innerSide);
 
-        int viewWidth = getWidth();
-        int viewHeight = getHeight();
+        trianglePath(outerTriangle, centerX, centerY, outerSide);
 
-        float testPointsCount = 1000;
-        float pointsInsideRegionCount = 0;
+        path.op(outerTriangle, innerTriangle, Path.Op.DIFFERENCE);
 
-        Random random = new Random();
+        return path;
+    }
 
-        for (int i=0; i<testPointsCount; i++) {
-            int randX = random.nextInt(viewWidth);
+    private Path trianglePath(Path path, float centerX, float centerY, float side) {
+        path.moveTo(centerX, centerY - (side / (float) sqrt(3)));
+        path.lineTo(centerX + (side / 2), centerY + (side / ((float) sqrt(3) * 2)));
+        path.lineTo(centerX - (side/2), centerY + (side / ((float)sqrt(3) * 2)));
+        path.lineTo(centerX, centerY - (side / (float) sqrt(3)));
+        path.close();
 
-            int randY = random.nextInt(viewHeight);
-            randomPoints.add(new Point(randX, randY));
+        return path;
+    }
 
-            if (region.contains(randX, randY)) {
+    private double monteCarloArea(Path path) {
+
+        RectF clipRectF = new RectF();
+        path.computeBounds(clipRectF, true);
+        Rect clipRect = new Rect();
+        clipRectF.round(clipRect);
+        Region clip = new Region(clipRect);
+
+        Region region = new Region();
+        region.setPath(path, clip);
+        Rect regionBounds = new Rect();
+        region.getBounds(regionBounds);
+
+
+        double pointsInsideRegionCount = 0;
+
+        for (Point point : randomPoints) {
+            if (region.contains(point.x, point.y)) {
                 pointsInsideRegionCount++;
             }
         }
 
-
-        float area = (pointsInsideRegionCount / testPointsCount) * 1000;
-
-
+        double area = (pointsInsideRegionCount / randomPoints.size()) * 1000.0;
 
         return area;
+    }
+
+    private void setupRandomPoints(int count, int viewWidth, int viewHeight) {
+        Random random = new Random();
+
+        for (int i=0; i<count; i++) {
+            int randX = random.nextInt(viewWidth);
+            int randY = random.nextInt(viewHeight);
+            randomPoints.add(new Point(randX, randY));
+        }
     }
 
 
@@ -360,7 +386,7 @@ public class DrawingView extends View {
                     //startActivity(i);
                     Log.e("UPDATE SCORE2 PROCESS", "SUCCESS");
                     // closing this screen
-//                    finish();
+                    // finish();
                 } else {
                     // failed to create product
                 }
