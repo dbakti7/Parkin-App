@@ -11,4 +11,6 @@
     <string name="title_activity_game3">Game3</string>
     <string name="title_activity_drawing_game">DrawingGameActivity</string>
     <string name="title_activity_statistics">Statistics</string>
+    <string name="title_activity_splash_screen">ParkinApp</string>
+    <string name="title_activity_balancing_ball">BalancingBall</string>
 </resources>

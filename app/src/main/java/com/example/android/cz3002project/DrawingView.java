@@ -19,6 +19,7 @@ import android.view.View;
 import android.graphics.Bitmap;
 import android.graphics.Path;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,9 +33,8 @@ import java.util.Random;
 
 import static java.lang.Math.*;
 
-
 /**
- * TODO: document your custom view class.
+ * This class is used to handle the drawing on Shape Tracing Game
  */
 public class DrawingView extends View {
 
@@ -46,6 +46,7 @@ public class DrawingView extends View {
     private Paint shapePaint;
     private float shapeLineWidth;
     private int shapeColor = 0xFF000000;
+
     private Path innerShape;
     private Path outerShape;
 
@@ -63,6 +64,7 @@ public class DrawingView extends View {
     // difference color
     private int differenceColor = 0xFFFF0000;
 
+
     ArrayList<Point> randomPoints;
     private boolean lastShape;
 
@@ -72,6 +74,7 @@ public class DrawingView extends View {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
+    // url to access the database with PHP
     private static String url_update_score2 = "http://10.27.44.239/update_score2.php";
     private static String url_read_user = "http://10.27.44.239/read_user.php";
 
@@ -91,7 +94,6 @@ public class DrawingView extends View {
         email = preferences.getString("Email", "");
 
     }
-
 
     private void setupShapePath() {
         shapePath = new Path();
@@ -145,7 +147,6 @@ public class DrawingView extends View {
 
         shapePath = circlePath(centerX, centerY, radius, shapeLineWidth, innerShape, outerShape);
 
-
 //        drawCanvas.drawPath(shapePath, shapePaint);
 
         setupRandomPoints(10000, w, h);
@@ -165,7 +166,6 @@ public class DrawingView extends View {
 //        innerDifferencePaint.setAntiAlias(true);
 //        innerDifferencePaint.setStyle(Paint.Style.FILL);
 //        canvas.drawPath(innerDifferencePath, innerDifferencePaint);
-
     }
 
     @Override
@@ -187,7 +187,9 @@ public class DrawingView extends View {
                 drawPath.lineTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
+
 //                drawPath.close();
+
 
                 outerDifferencePath.op(drawPath, outerShape, Path.Op.DIFFERENCE);
                 innerDifferencePath.op(innerShape, drawPath, Path.Op.DIFFERENCE);
@@ -316,7 +318,9 @@ public class DrawingView extends View {
         }
     }
 
-
+    /**
+     * Async class to handle database
+     */
     class UpdateScore2 extends AsyncTask<String, String, String> {
 
         /**
@@ -333,16 +337,19 @@ public class DrawingView extends View {
         }
 
         /**
-         * Creating product
+         * Updating the score for Shape Tracing game
          * */
         protected String doInBackground(String... args) {
 
-            // Retrieving Data
+            // Retrieving the previous data for this game
+
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email", email));
+
             Double average_game2 = 0.0, play_time2 = 0.0, total = 0.0;
             JSONObject prevData = jsonParser.makeHttpRequest(url_read_user, "GET", params);
+
             try {
                 int success = prevData.getInt("success");
 
@@ -351,25 +358,21 @@ public class DrawingView extends View {
                     JSONObject jo = user.getJSONObject(0);
 
                     average_game2 = Double.parseDouble(jo.getString("average_game2"));
-                    Log.e("Average game2", average_game2.toString());
                     play_time2 = Double.parseDouble(jo.getString("play_time2"));
                     total = average_game2 * play_time2 + score;
-                    Log.e("Total", total.toString());
-                    average_game2 = total / (play_time2 + 1);
-
-                    // closing this screen
+                    average_game2 = total / (play_time2 + 1); // update average score for this game
                 } else {
-                    // failed to create product
+                    // connection failed
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            // Sending Data
+            // Sending Data to database
             params.add(new BasicNameValuePair("score2", ((Integer)score).toString()));
             params.add(new BasicNameValuePair("average_game2", (average_game2.toString())));
-            // getting JSON Object
-            // Note that create product url accepts POST method
+
+            // getting JSON Object to check the status
             JSONObject json = jsonParser.makeHttpRequest(url_update_score2,
                     "GET", params);
 

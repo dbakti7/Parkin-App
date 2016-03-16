@@ -12,13 +12,10 @@
         <TextView
             android:id="@+id/homeTVUserName"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
             android:textSize="22sp"
             android:textColor="#0277bd"
-            android:layout_height="match_parent"  />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"  />
         <LinearLayout
             android:layout_width="0dp"
@@ -27,7 +24,7 @@
             android:layout_height="match_parent">
             <Button
                 android:id="@+id/homeButtonLogOut"
-                android:background="@drawable/logoutbutton"
+                android:background="@mipmap/logoutbutton"
                 android:layout_width="0dp"
                 android:gravity="center"
                 android:layout_height="match_parent"
@@ -41,15 +38,16 @@
 
     <ImageView
         android:layout_width="wrap_content"
+        android:layout_gravity="center"
         android:layout_height="0dp" android:layout_weight="5"
-        android:src="@drawable/parkinapp"/>
+        android:src="@mipmap/parkinapp"/>
 
     <ImageView android:layout_width="match_parent"
         android:padding="30dp"
         android:layout_height="0dp"
         android:layout_weight="2" android:gravity="center" android:textStyle="bold"
         android:textSize="@dimen/abc_text_size_large_material"
-        android:src="@drawable/parkinappwords"/>
+        android:src="@mipmap/parkinappwords"/>
 
 
     <Button
@@ -57,18 +55,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/enterbutton"
+        android:background="@mipmap/enterbutton"
         android:layout_gravity="center"
         android:onClick="Enter"
         />
 
     <Button
         android:id="@+id/homeButtonRegister"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:layout_gravity="center"
-        android:background="@drawable/signupbutton"
+        android:background="@mipmap/signupbutton"
         android:onClick="SignUp"
         />
 
@@ -82,13 +80,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
             android:paddingLeft="30dp"
             android:paddingRight="30dp">
             <Button
                 android:id="@+id/homeButtonSignIn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/signinbutton1"
+                android:background="@mipmap/signinbutton1"
                 android:onClick="LogIn"/>
         </LinearLayout>
 
@@ -98,13 +97,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center">
             <Button
                 android:id="@+id/homeButtonPlayGames"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/skipnowbutton"
+                android:background="@mipmap/skipnowbutton"
                 android:onClick="SkipNow"/>
         </LinearLayout>
 

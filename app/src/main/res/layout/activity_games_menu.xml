@@ -6,7 +6,7 @@
 
     <ImageView android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/chooseagame"
+        android:src="@mipmap/chooseagame"
         android:layout_weight="0.5" android:gravity="center" android:textStyle="bold"
         android:textSize="@dimen/abc_text_size_large_material" />
 
@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/balancingicon"
+            android:background="@mipmap/balancingicon"
             android:onClick="PlayGame1"/>
 
         <Button
@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/shapetracingicon"
+            android:background="@mipmap/shapetracingicon"
             android:onClick="PlayGame2"/>
 
     </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-            android:background="@drawable/wordvoicingicon"
+            android:background="@mipmap/wordvoicingicon"
             android:onClick="PlayGame3"/>
 
         <TextView
@@ -98,7 +98,7 @@
             android:text="Word Voicing"/>
     </LinearLayout>
     <Button
-        android:background="@drawable/statisticbutton"
+        android:background="@mipmap/statisticbutton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

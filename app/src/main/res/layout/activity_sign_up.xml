@@ -8,8 +8,9 @@
         android:layout_weight="0.5"/>
     <ImageView
         android:layout_width="wrap_content"
+        android:layout_gravity="center"
         android:layout_height="0dp" android:layout_weight="3"
-        android:src="@drawable/parkinapp"/>
+        android:src="@mipmap/parkinapp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -68,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
-        android:background="@drawable/signupbutton"
+        android:background="@mipmap/signupbutton"
         android:onClick="UserSignUp"/>
 
     <TextView

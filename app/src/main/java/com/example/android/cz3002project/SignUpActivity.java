@@ -2,11 +2,9 @@ package com.example.android.cz3002project;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.drm.ProcessedData;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +19,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class is used to handle Sign Up Acitivity
+ */
 public class SignUpActivity extends ActionBarActivity {
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
+    // attributes to get user data from text fields
     String inputName;
     String inputEmail;
     String inputPhoneNumber;
     String inputPassword;
     String inputRepeatPassword;
+
+    // url to handle database query with PHP
     private static String url_create_user = "http://10.27.44.239/create_user.php";
 
     @Override
@@ -67,24 +70,32 @@ public class SignUpActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-
+    // Handle user sign up process
     public void UserSignUp(View view)
     {
+        // get the data from text fields
         inputName = ((EditText) findViewById(R.id.signUpEditTextName)).getText().toString();
         inputEmail = ((EditText) findViewById(R.id.signUpEditTextEmail)).getText().toString();
         inputPhoneNumber = ((EditText) findViewById(R.id.signUpEditTextPhoneNumber)).getText().toString();
         inputPassword = ((EditText) findViewById(R.id.signUpEditTextPassword)).getText().toString();
         inputRepeatPassword = ((EditText) (findViewById(R.id.signUpEditTextRepeatPassword))).getText().toString();
 
+        // If some text fields are empty
         if(inputName.equals("") || inputEmail.equals("") || inputPhoneNumber.equals("")
                 || inputPassword.equals("") || inputRepeatPassword.equals("")) {
             Toast.makeText(SignUpActivity.this, "All fields are required!", Toast.LENGTH_LONG).show();
             finish();
             startActivity(getIntent());
         }
+        // if password and repeat password are matched
         else if(inputPassword.compareTo(inputRepeatPassword) == 0) {
-            new CreateNewUser().execute();
+            // if there is internet connection
+            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                new CreateNewUser().execute();
+            else
+                Toast.makeText(SignUpActivity.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
         }
+        // if password and repeat password do not matched
         else {
             Toast.makeText(SignUpActivity.this, "Passwords do not match!", Toast.LENGTH_LONG).show();
             finish();
@@ -93,6 +104,9 @@ public class SignUpActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * Async Class to handle database query to perform signing up
+     */
     class CreateNewUser extends AsyncTask<String, String, String> {
         int status = 0; // 0 for failed login, 1 if success
         /**
@@ -109,7 +123,7 @@ public class SignUpActivity extends ActionBarActivity {
         }
 
         /**
-         * Creating product
+         * Sending data
          * */
         protected String doInBackground(String... args) {
 
@@ -121,7 +135,7 @@ public class SignUpActivity extends ActionBarActivity {
             params.add(new BasicNameValuePair("password", inputPassword));
 
             // getting JSON Object
-            // Note that create product url accepts POST method
+            // send the data and get the return value to check the status
             JSONObject json = jsonParser.makeHttpRequest(url_create_user,
                     "GET", params);
 
@@ -152,6 +166,7 @@ public class SignUpActivity extends ActionBarActivity {
             else
                 Toast.makeText(SignUpActivity.this, "Some error occurred!", Toast.LENGTH_LONG).show();
             finish();
+            // go to Main Activity
             Intent i = new Intent(SignUpActivity.this, MainActivity.class);
             startActivity(i);
         }

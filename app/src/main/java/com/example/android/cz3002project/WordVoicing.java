@@ -1,6 +1,7 @@
 package com.example.android.cz3002project;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -9,14 +10,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.app.Activity;
 import android.media.MediaRecorder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,28 +28,26 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Game3 extends ActionBarActivity {
-    TextView mStatusView;
+/**
+ * This class is used to handle Word Voicing Activity
+ */
+public class WordVoicing extends ActionBarActivity {
     MediaRecorder mRecorder;
     Thread runner;
-    private static double mEMA = 0.0;
-    static final private double EMA_FILTER = 0.6;
     public int seconds = 10;
-    public int minutes = 0;
 
+    // progress bar animation
     private ProgressBar progressBar;
     private double progressBarStatus = 0;
     private Handler progressBarHandler = new Handler();
-    private double highestScore;
+    private double highestScore; // to keep track of highest score for this game
 
     final Runnable updater = new Runnable(){
 
         public void run(){
-            //updateDb();
         };
     };
     final Handler mHandler = new Handler();
-
 
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
@@ -58,23 +55,24 @@ public class Game3 extends ActionBarActivity {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
+    // urls to handle database query with PHP
     private static String url_update_score3 = "http://10.27.44.239/update_score3.php";
     private static String url_read_user = "http://10.27.44.239/read_user.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game3);
+        setContentView(R.layout.activity_word_voicing);
 
+        // get shared preferences data
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
         email = preferences.getString("Email", "");
 
-
         highestScore = 0;
-        mStatusView = (TextView) findViewById(R.id.status);
 
 
+        // start the audio input from microphone
         if (runner == null)
         {
             runner = new Thread(){
@@ -106,21 +104,20 @@ public class Game3 extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        if(minutes == 0 && seconds==0) {
+                        // terminate the timer
+                        if(seconds==0) {
                             t.cancel();
-                            new UpdateScore3().execute();
+                            // if there is internet connection
+                            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                                new UpdateScore3().execute();
+                            else
+                                Toast.makeText(WordVoicing.this, "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
                             return;
                         }
-
-
-                        if (seconds == 0) {
-                            seconds = 60;
-                            minutes -= 1;
-                        }
                         seconds -= 1;
+                        // update the timer
                         TextView tv = (TextView) findViewById(R.id.game3TextViewTimer);
-                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        tv.setText(String.format("%02d", seconds));
                     }
                 });
             }
@@ -133,54 +130,41 @@ public class Game3 extends ActionBarActivity {
         progressBar = (ProgressBar) findViewById(R.id.game3ProgressBarPB);
         progressBar.setProgress(0);
 
-        progressBar.setMax(85);
+        progressBar.setMax(50);
 
         //reset progress bar status
         progressBarStatus = 0;
 
-
+        // Thread to update progress bar animation
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                while (progressBarStatus < 85 && ((minutes >= 0) || (seconds > 0))) {
-                    if(minutes == 0 && seconds == 0) {
+                while (seconds > 0) {
+                    if(seconds == 0) {
                         break;
                     }
-
-
                     // process some tasks
-                    progressBarStatus = doSomeTasks();
+                    progressBarStatus = getScore();
 
                     // Update the progress bar
                     progressBarHandler.post(new Runnable() {
                         public void run() {
-                            progressBar.setProgress((int)progressBarStatus);
+                            progressBar.setProgress((int) progressBarStatus);
                         }
                     });
                 }
-
-                // ok, file is downloaded,
-                //if (progressBarStatus >= 85) {
-
-                    // sleep 2 seconds, so that you can see the 100%
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // close the progress bar dialog
-                //}
             }
         });
         thread.start();
-
-
-
     }
 
+    // get score from current second
+    public double getScore() {
+        double currentScore = soundDb(0.7746)/92.0 * 100.00;
+        // to handle precision error
+        if(currentScore > 100)
+            currentScore = 100;
 
-    public double doSomeTasks() {
-
-        double currentScore = soundDb(0.7746);
+        // update highest score if current score is higher
         if(currentScore > highestScore)
             highestScore = currentScore;
         return soundDb(currentScore);
@@ -209,6 +193,11 @@ public class Game3 extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        seconds = 0;
+    }
 
     public void onResume()
     {
@@ -222,6 +211,7 @@ public class Game3 extends ActionBarActivity {
         stopRecorder();
     }
 
+    // to start the microphone input
     public void startRecorder(){
         if (mRecorder == null)
         {
@@ -245,11 +235,11 @@ public class Game3 extends ActionBarActivity {
             }catch (java.lang.SecurityException e) {
                 android.util.Log.e("[Monkey]", "SecurityException: " + android.util.Log.getStackTraceString(e));
             }
-
-            //mEMA = 0.0;
         }
 
     }
+
+    // stop microphone
     public void stopRecorder() {
         if (mRecorder != null) {
             mRecorder.stop();
@@ -258,33 +248,22 @@ public class Game3 extends ActionBarActivity {
         }
     }
 
-    public void updateTv(){
-        mStatusView.setText(Double.toString((getAmplitudeEMA())) + " dB");
-    }
-    public void updateDb() {
-        mStatusView.setText(Double.toString(soundDb(0.7746)));
-    }
-
-
-
+    // get sound decibel
     public double soundDb(double ampl){
         return  20 * Math.log10(getAmplitude() / ampl);
     }
+
+    // get sound amplitude
     public double getAmplitude() {
         if (mRecorder != null) {
-
             return  (mRecorder.getMaxAmplitude());}
         else
             return 0;
-
-    }
-    public double getAmplitudeEMA() {
-        double amp =  getAmplitude();
-        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
-        return mEMA;
     }
 
-
+    /**
+     * Async class to query database to update database
+     */
     class UpdateScore3 extends AsyncTask<String, String, String> {
 
         /**
@@ -293,18 +272,14 @@ public class Game3 extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(Game3.this);
+            pDialog = new ProgressDialog(WordVoicing.this);
             pDialog.setMessage("Updating Score for Game 3...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
         }
 
-        /**
-         * Creating product
-         * */
         protected String doInBackground(String... args) {
-
             // Retrieving Data
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -318,46 +293,29 @@ public class Game3 extends ActionBarActivity {
                     JSONArray user = prevData.getJSONArray("user");
                     JSONObject jo = user.getJSONObject(0);
 
+                    // get user's previous score
                     average_game3 = Double.parseDouble(jo.getString("average_game3"));
                     play_time3 = Double.parseDouble(jo.getString("play_time3"));
                     total = average_game3 * play_time3 + highestScore;
+
+                    // update it
                     average_game3 = total / (play_time3 + 1);
 
-                    // closing this screen
                 } else {
-                    // failed to create product
+                    // some error occurred
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            // Sending Data
+            // Build the parameters
             params.add(new BasicNameValuePair("score3", ((Double)highestScore).toString()));
             params.add(new BasicNameValuePair("average_game3", (average_game3.toString())));
+
             // getting JSON Object
-            // Note that create product url accepts POST method
+            // send data to update database and get the return value to check the status
             JSONObject json = jsonParser.makeHttpRequest(url_update_score3,
                     "GET", params);
-
-            // check log cat fro response
-            //Log.d("Create Response", json.toString());
-
-            // check for success tag
-            try {
-                int success = json.getInt("success");
-
-                if (success == 1) {
-                    // successfully created product
-                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
-                    //startActivity(i);
-                    // closing this screen
-                    finish();
-                } else {
-                    // failed to create product
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
             return null;
         }
@@ -368,7 +326,11 @@ public class Game3 extends ActionBarActivity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            Toast.makeText(WordVoicing.this, "Your Score:\n" + String.format("%.2f", highestScore), Toast.LENGTH_LONG).show();
+            finish();
+            // go to Games Menu activity
+            Intent i = new Intent(WordVoicing.this, GamesMenu.class);
+            startActivity(i);
         }
-
     }
 }
