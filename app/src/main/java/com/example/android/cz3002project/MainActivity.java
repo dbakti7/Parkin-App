@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -34,7 +35,9 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG_NAME = "name";
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
+    Button logOutButton;
+    Button signInButton;
+    TextView userNameText;
     JSONParser jParser = new JSONParser();
     private static String url_read_user = "http://10.27.44.239/read_user.php";
     @Override
@@ -44,9 +47,17 @@ public class MainActivity extends ActionBarActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
         String name = preferences.getString("Name", "");
+        logOutButton = (Button) findViewById(R.id.homeButtonLogOut);
+        signInButton = (Button) findViewById(R.id.homeButtonSignIn);
+        userNameText = (TextView) findViewById(R.id.homeTVUserName);
         if(!name.equalsIgnoreCase("")) {
-            TextView textViewToChange = (TextView) findViewById(R.id.mainTVtext1);
-            textViewToChange.setText(name);
+            signInButton.setText("Change User");
+            logOutButton.setVisibility(View.VISIBLE);
+            userNameText.setText(name);
+        }
+        else {
+            logOutButton.setVisibility(View.GONE);
+            userNameText.setText("");
         }
         //new LoadAllProducts().execute();
 
@@ -81,8 +92,13 @@ public class MainActivity extends ActionBarActivity {
         //Refresh your stuff here
         String name = preferences.getString("Name", "");
         if(!name.equalsIgnoreCase("")) {
-            TextView textViewToChange = (TextView) findViewById(R.id.mainTVtext1);
-            textViewToChange.setText(name);
+            signInButton.setText("Change User");
+            logOutButton.setVisibility(View.VISIBLE);
+            userNameText.setText(name);
+        }
+        else {
+            logOutButton.setVisibility(View.GONE);
+            userNameText.setText("");
         }
     }
 
@@ -103,7 +119,13 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-
+    public void LogOut(View view)
+    {
+        editor.putString("Name", "");
+        editor.apply();
+        finish();
+        startActivity(getIntent());
+    }
 
     class LoadAllProducts extends AsyncTask<String, String, String> {
         String password = null, name = null;
@@ -163,12 +185,6 @@ public class MainActivity extends ActionBarActivity {
                     /**
                      * Updating parsed JSON data into ListView
                      * */
-                    TextView textViewToChange = (TextView) findViewById(R.id.mainTVtext1);
-                    textViewToChange.setText(
-                            password);
-                    textViewToChange = (TextView) findViewById(R.id.mainTVtext2);
-                    textViewToChange.setText(
-                            name);
                 }
             });
 
