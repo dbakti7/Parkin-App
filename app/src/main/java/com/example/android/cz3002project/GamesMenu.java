@@ -47,6 +47,13 @@ public class GamesMenu extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void PlayGame1(View view)
+    {
+        // play Balancing Ball
+        Intent intent = new Intent(GamesMenu.this, BalancingBall.class);
+        startActivity(intent);
+    }
+
     public void PlayGame2(View view)
     {
         // play Shape Tracing

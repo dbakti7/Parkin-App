@@ -110,6 +110,7 @@ public class MainActivity extends ActionBarActivity {
     public void onBackPressed() {
         // exit from application
         moveTaskToBack(true);
+
     }
 
     public void SignUp(View view)
