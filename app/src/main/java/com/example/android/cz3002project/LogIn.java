@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,6 +34,8 @@ public class LogIn extends ActionBarActivity {
     private static final String TAG_SUCCESS = "success";
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
+    FragmentManager fm = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,18 +67,26 @@ public class LogIn extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
 
     public void UserLogIn(View view)
     {
         inputEmail = (EditText) findViewById(R.id.logInEditTextEmail);
         inputPassword = (EditText) findViewById(R.id.logInEditTextPassword);
         new UserLogInProcess().execute();
+
         //Intent intent = new Intent(LogIn.this, Game3.class);
         //startActivity(intent);
     }
 
     class UserLogInProcess extends AsyncTask<String, String, String> {
-
+        int status = 0; // 0: error, 1: successful, 2: failed
         /**
          * Before starting background thread Show Progress Dialog
          * */
@@ -95,7 +107,6 @@ public class LogIn extends ActionBarActivity {
         protected String doInBackground(String... args) {
             String email = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
-
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email", email));
@@ -121,19 +132,21 @@ public class LogIn extends ActionBarActivity {
                     JSONArray user = json.getJSONArray("user");
                     JSONObject jo = user.getJSONObject(0);
                     String retrievedPassword = jo.getString("password");
-                    String retrievedName = jo.getString("name");
-                    String retrievedEmail = jo.getString("email");
-                    editor.putString("Name", retrievedName);
-                    editor.putString("Email", retrievedEmail);
-                    editor.apply();
-                    if(retrievedPassword.compareTo(password) == 0)
-                        Log.e("LOGIN PROCESS", "Success");
-                    else
-                        Log.e("LOGIN PROCESS", "Failed");
-                    // closing this screen
-                    finish();
+                    if(retrievedPassword.compareTo(password) == 0) {
+                        String retrievedName = jo.getString("name");
+                        String retrievedEmail = jo.getString("email");
+                        editor.putString("Name", retrievedName);
+                        editor.putString("Email", retrievedEmail);
+                        editor.apply();
+                        status = 1;
+                    }
+                    else {
+                        // failed login
+                        status = 2;
+                    }
                 } else {
-                    // failed to create product
+                    // error occurred
+                    status = 0;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -148,6 +161,15 @@ public class LogIn extends ActionBarActivity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            if(status == 0)
+                Toast.makeText(LogIn.this, "Some error occurred!", Toast.LENGTH_LONG).show();
+            else if(status == 1)
+                Toast.makeText(LogIn.this, "Login Successful!", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(LogIn.this, "Login Failed!", Toast.LENGTH_LONG).show();
+            finish();
+            Intent i = new Intent(LogIn.this, MainActivity.class);
+            startActivity(i);
         }
 
     }

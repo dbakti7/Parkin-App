@@ -74,6 +74,13 @@ public class Statistics extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,GamesMenu.class);
+        startActivity(intent);
+    }
+
     class RetrieveData extends AsyncTask<String, String, String> {
 
         /**
@@ -146,18 +153,18 @@ public class Statistics extends ActionBarActivity {
             // dismiss the dialog once done
             TextView updateScore;
             updateScore = (TextView) findViewById(R.id.statisticsTVScore1);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", score[0]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[0]));
             updateScore = (TextView) findViewById(R.id.statisticsTVScore2);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", score[1]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[1]));
             updateScore = (TextView) findViewById(R.id.statisticsTVScore3);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", score[2]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[2]));
 
             updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore1);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", averageScore[0]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[0]));
             updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore2);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", averageScore[1]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[1]));
             updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore3);
-            updateScore.setText(updateScore.getText() + String.format("%.2f", averageScore[2]));
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[2]));
 
             pDialog.dismiss();
         }

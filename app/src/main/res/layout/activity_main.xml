@@ -13,18 +13,28 @@
             android:id="@+id/homeTVUserName"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textSize="22sp"
+            android:textColor="#0277bd"
             android:layout_height="match_parent"  />
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"  />
-        <Button
-            android:id="@+id/homeButtonLogOut"
-            android:text="Log Out"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:padding="15dp"
             android:layout_weight="1"
-            android:onClick="LogOut"/>
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/homeButtonLogOut"
+                android:background="@drawable/logoutbutton"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="LogOut"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 
@@ -34,23 +44,21 @@
         android:layout_height="0dp" android:layout_weight="5"
         android:src="@drawable/parkinapp"/>
 
-    <TextView android:text="Parkin App" android:layout_width="match_parent"
-        android:layout_height="0px" android:layout_weight="1" android:gravity="center"
-        android:textSize="@dimen/abc_text_size_large_material"/>
-    <TextView
-        android:layout_width="match_parent"
+    <ImageView android:layout_width="match_parent"
+        android:padding="30dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="2" android:gravity="center" android:textStyle="bold"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:src="@drawable/parkinappwords"/>
+
 
     <Button
         android:id="@+id/homeButtonEnter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Enter"
-        android:layout_margin="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:background="@drawable/enterbutton"
         android:layout_gravity="center"
-        android:background="@drawable/roundedbutton"
         android:onClick="Enter"
         />
 

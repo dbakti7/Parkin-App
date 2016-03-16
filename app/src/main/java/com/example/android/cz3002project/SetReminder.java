@@ -78,6 +78,14 @@ public class SetReminder extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainMenu.class);
+        startActivity(intent);
+    }
+
     public void SetReminder(View view) {
         if(!email.equalsIgnoreCase("")) {
             new UpdateReminderPeriod().execute();

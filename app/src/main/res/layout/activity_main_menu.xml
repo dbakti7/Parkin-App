@@ -14,18 +14,28 @@
             android:id="@+id/menuTVUserName"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textSize="22sp"
+            android:textColor="#0277bd"
             android:layout_height="match_parent"  />
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"  />
-        <Button
-            android:id="@+id/menuButtonLogOut"
-            android:text="Log Out"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:padding="15dp"
             android:layout_weight="1"
-            android:onClick="LogOut"/>
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/menuButtonLogOut"
+                android:background="@drawable/logoutbutton"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="LogOut"/>
+        </LinearLayout>
+
     </LinearLayout>
 
     <ImageView
@@ -38,22 +48,19 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"/>
 
-    <TextView android:text="Parkin App" android:layout_width="match_parent"
+    <ImageView android:layout_width="match_parent"
+        android:padding="30dp"
         android:layout_height="0dp"
         android:layout_weight="2" android:gravity="center" android:textStyle="bold"
-        android:textSize="@dimen/abc_text_size_large_material" />
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:src="@drawable/parkinappwords"/>
 
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/menuButtonPlayGames"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:background="@drawable/playgamebutton"
         android:onClick="PlayGames"/>
 
@@ -61,7 +68,7 @@
         android:id="@+id/menuButtonSetReminder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:background="@drawable/setreminderbutton"
         android:onClick="SetReminder"/>
 

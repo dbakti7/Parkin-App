@@ -67,6 +67,13 @@ public class MainMenu extends ActionBarActivity {
 //    public void onBackPressed() {
 //    }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
     public void SetReminder(View view)
     {
         Intent intent = new Intent(MainMenu.this, SetReminder.class);

@@ -15,7 +15,6 @@ public class DrawingGameActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawing_game);
-
         scoreTextView = (TextView)findViewById(R.id.score_text);
     }
 

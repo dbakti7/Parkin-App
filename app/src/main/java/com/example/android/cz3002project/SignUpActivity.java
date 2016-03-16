@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -59,6 +60,14 @@ public class SignUpActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
+
     public void UserSignUp(View view)
     {
         inputName = ((EditText) findViewById(R.id.signUpEditTextName)).getText().toString();
@@ -67,17 +76,25 @@ public class SignUpActivity extends ActionBarActivity {
         inputPassword = ((EditText) findViewById(R.id.signUpEditTextPassword)).getText().toString();
         inputRepeatPassword = ((EditText) (findViewById(R.id.signUpEditTextRepeatPassword))).getText().toString();
 
-        Log.e("INSIDE", inputPassword);
-        if(inputPassword.compareTo(inputRepeatPassword) == 0) {
-            new CreateNewUser().execute();
-
+        if(inputName.equals("") || inputEmail.equals("") || inputPhoneNumber.equals("")
+                || inputPassword.equals("") || inputRepeatPassword.equals("")) {
+            Toast.makeText(SignUpActivity.this, "All fields are required!", Toast.LENGTH_LONG).show();
+            finish();
+            startActivity(getIntent());
         }
-//        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-//        startActivity(intent);
+        else if(inputPassword.compareTo(inputRepeatPassword) == 0) {
+            new CreateNewUser().execute();
+        }
+        else {
+            Toast.makeText(SignUpActivity.this, "Passwords do not match!", Toast.LENGTH_LONG).show();
+            finish();
+            startActivity(getIntent());
+        }
+
     }
 
     class CreateNewUser extends AsyncTask<String, String, String> {
-
+        int status = 0; // 0 for failed login, 1 if success
         /**
          * Before starting background thread Show Progress Dialog
          * */
@@ -108,22 +125,14 @@ public class SignUpActivity extends ActionBarActivity {
             JSONObject json = jsonParser.makeHttpRequest(url_create_user,
                     "GET", params);
 
-            // check log cat fro response
-            //Log.d("Create Response", json.toString());
-
             // check for success tag
             try {
                 int success = json.getInt("success");
 
                 if (success == 1) {
-                    // successfully created product
-                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
-                    //startActivity(i);
-                    Log.e("SIGN UP PROCESS", "SUCCESS");
-                    // closing this screen
-                    finish();
+                    status = 1; // success
                 } else {
-                    // failed to create product
+                    status = 0; // error occurred
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -138,6 +147,13 @@ public class SignUpActivity extends ActionBarActivity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            if(status == 1)
+                Toast.makeText(SignUpActivity.this, "User Account Successfully Created!", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(SignUpActivity.this, "Some error occurred!", Toast.LENGTH_LONG).show();
+            finish();
+            Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+            startActivity(i);
         }
 
     }

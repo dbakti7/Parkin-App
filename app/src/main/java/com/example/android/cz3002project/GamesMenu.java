@@ -38,6 +38,13 @@ public class GamesMenu extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainMenu.class);
+        startActivity(intent);
+    }
+
     public void PlayGame2(View view)
     {
         Intent intent = new Intent(GamesMenu.this, DrawingGameActivity.class);
