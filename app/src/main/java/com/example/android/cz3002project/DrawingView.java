@@ -18,6 +18,7 @@ import android.view.View;
 import android.graphics.Bitmap;
 import android.graphics.Path;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -234,7 +235,10 @@ public class DrawingView extends View {
                 int uncorrectedScore = (int) (100 - Math.ceil(outerDifferenceArea) - Math.ceil(innerDifferenceArea));
                 score = (uncorrectedScore >= 0) ? uncorrectedScore : 0;
                 Log.d("SCORE", "score=" + score);
-                new UpdateScore2().execute();
+                if (CheckNetworkConnection.checknetwork(this.getContext()))
+                    new UpdateScore2().execute();
+                else
+                    Toast.makeText(this.getContext(), "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
                 com.example.android.cz3002project.DrawingGameActivity.scoreTextView.setText("Score: "+score);
                 break;
             default:

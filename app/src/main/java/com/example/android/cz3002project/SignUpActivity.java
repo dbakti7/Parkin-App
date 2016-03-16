@@ -83,7 +83,10 @@ public class SignUpActivity extends ActionBarActivity {
             startActivity(getIntent());
         }
         else if(inputPassword.compareTo(inputRepeatPassword) == 0) {
-            new CreateNewUser().execute();
+            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                new CreateNewUser().execute();
+            else
+                Toast.makeText(SignUpActivity.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
         }
         else {
             Toast.makeText(SignUpActivity.this, "Passwords do not match!", Toast.LENGTH_LONG).show();

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,11 +44,29 @@ public class Statistics extends ActionBarActivity {
         email = preferences.getString("Email", "");
         editor = preferences.edit();
         if(!email.equalsIgnoreCase(""))
-            new RetrieveData().execute();
+            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                new RetrieveData().execute();
+            else
+                Toast.makeText(Statistics.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
         else {
             for(int i = 0;i<3;++i) {
                 score[i] = averageScore[i] = 0.0;
             }
+            TextView updateScore;
+            updateScore = (TextView) findViewById(R.id.statisticsTVScore1);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[0]));
+            updateScore = (TextView) findViewById(R.id.statisticsTVScore2);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[1]));
+            updateScore = (TextView) findViewById(R.id.statisticsTVScore3);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[2]));
+
+            updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore1);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[0]));
+            updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore2);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[1]));
+            updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore3);
+            updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[2]));
+            Toast.makeText(Statistics.this, "Log In to save your statistics...", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -79,10 +79,11 @@ public class LogIn extends ActionBarActivity {
     {
         inputEmail = (EditText) findViewById(R.id.logInEditTextEmail);
         inputPassword = (EditText) findViewById(R.id.logInEditTextPassword);
-        new UserLogInProcess().execute();
+        if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+            new UserLogInProcess().execute();
+        else
+            Toast.makeText(LogIn.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
 
-        //Intent intent = new Intent(LogIn.this, Game3.class);
-        //startActivity(intent);
     }
 
     class UserLogInProcess extends AsyncTask<String, String, String> {

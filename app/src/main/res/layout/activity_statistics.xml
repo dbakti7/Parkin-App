@@ -7,7 +7,7 @@
     <ImageView  android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5" android:gravity="center" android:textStyle="bold"
-        android:src="@drawable/yourstatistics" />
+        android:src="@mipmap/yourstatistics" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/balancingicon"/>
+            android:src="@mipmap/balancingicon"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/shapetracingicon"/>
+            android:src="@mipmap/shapetracingicon"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/wordvoicingicon"/>
+            android:src="@mipmap/wordvoicingicon"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -116,6 +116,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/okbutton"
+        android:background="@mipmap/okbutton"
         android:onClick="OK"/>
 </LinearLayout>

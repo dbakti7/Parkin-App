@@ -68,8 +68,6 @@ public class MainActivity extends ActionBarActivity {
             enterButton.setVisibility(View.GONE);
             userNameText.setText("");
         }
-        //new LoadAllProducts().execute();
-
     }
 
     @Override
@@ -118,6 +116,12 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+
     public void SignUp(View view)
     {
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
@@ -143,6 +147,7 @@ public class MainActivity extends ActionBarActivity {
     public void LogOut(View view)
     {
         editor.putString("Name", "");
+        editor.putString("Email", "");
         editor.apply();
         finish();
         startActivity(getIntent());

@@ -28,7 +28,7 @@
             android:layout_height="match_parent">
             <Button
                 android:id="@+id/menuButtonLogOut"
-                android:background="@drawable/logoutbutton"
+                android:background="@mipmap/logoutbutton"
                 android:layout_width="0dp"
                 android:gravity="center"
                 android:layout_height="match_parent"
@@ -39,9 +39,10 @@
     </LinearLayout>
 
     <ImageView
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="0dp" android:layout_weight="3"
-        android:src="@drawable/parkinapp"/>
+        android:src="@mipmap/parkinapp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -53,7 +54,7 @@
         android:layout_height="0dp"
         android:layout_weight="2" android:gravity="center" android:textStyle="bold"
         android:textSize="@dimen/abc_text_size_large_material"
-        android:src="@drawable/parkinappwords"/>
+        android:src="@mipmap/parkinappwords"/>
 
 
     <Button
@@ -61,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
-        android:background="@drawable/playgamebutton"
+        android:background="@mipmap/playgamebutton"
         android:onClick="PlayGames"/>
 
     <Button
@@ -69,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
-        android:background="@drawable/setreminderbutton"
+        android:background="@mipmap/setreminderbutton"
         android:onClick="SetReminder"/>
 
     <TextView

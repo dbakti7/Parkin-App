@@ -89,6 +89,7 @@ public class MainMenu extends ActionBarActivity {
     public void LogOut(View view)
     {
         editor.putString("Name", "");
+        editor.putString("Email", "");
         editor.apply();
         Intent intent = new Intent(MainMenu.this, MainActivity.class);
         startActivity(intent);

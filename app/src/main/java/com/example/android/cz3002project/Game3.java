@@ -1,6 +1,7 @@
 package com.example.android.cz3002project;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -36,7 +38,6 @@ public class Game3 extends ActionBarActivity {
     private static double mEMA = 0.0;
     static final private double EMA_FILTER = 0.6;
     public int seconds = 10;
-    public int minutes = 0;
 
     private ProgressBar progressBar;
     private double progressBarStatus = 0;
@@ -107,20 +108,17 @@ public class Game3 extends ActionBarActivity {
                     @Override
                     public void run() {
 
-                        if(minutes == 0 && seconds==0) {
+                        if(seconds==0) {
                             t.cancel();
-                            new UpdateScore3().execute();
+                            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                                new UpdateScore3().execute();
+                            else
+                                Toast.makeText(Game3.this, "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
                             return;
-                        }
-
-
-                        if (seconds == 0) {
-                            seconds = 60;
-                            minutes -= 1;
                         }
                         seconds -= 1;
                         TextView tv = (TextView) findViewById(R.id.game3TextViewTimer);
-                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        tv.setText(String.format("%02d", seconds));
                     }
                 });
             }
@@ -133,7 +131,7 @@ public class Game3 extends ActionBarActivity {
         progressBar = (ProgressBar) findViewById(R.id.game3ProgressBarPB);
         progressBar.setProgress(0);
 
-        progressBar.setMax(85);
+        progressBar.setMax(50);
 
         //reset progress bar status
         progressBarStatus = 0;
@@ -141,8 +139,8 @@ public class Game3 extends ActionBarActivity {
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                while (progressBarStatus < 85 && ((minutes >= 0) || (seconds > 0))) {
-                    if(minutes == 0 && seconds == 0) {
+                while (seconds > 0) {
+                    if(seconds == 0) {
                         break;
                     }
 
@@ -153,22 +151,10 @@ public class Game3 extends ActionBarActivity {
                     // Update the progress bar
                     progressBarHandler.post(new Runnable() {
                         public void run() {
-                            progressBar.setProgress((int)progressBarStatus);
+                            progressBar.setProgress((int) progressBarStatus);
                         }
                     });
                 }
-
-                // ok, file is downloaded,
-                //if (progressBarStatus >= 85) {
-
-                    // sleep 2 seconds, so that you can see the 100%
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // close the progress bar dialog
-                //}
             }
         });
         thread.start();
@@ -180,7 +166,9 @@ public class Game3 extends ActionBarActivity {
 
     public double doSomeTasks() {
 
-        double currentScore = soundDb(0.7746);
+        double currentScore = soundDb(0.7746)/92.0 * 100.00;
+        if(currentScore > 100)
+            currentScore = 100;
         if(currentScore > highestScore)
             highestScore = currentScore;
         return soundDb(currentScore);
@@ -209,6 +197,10 @@ public class Game3 extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+    }
 
     public void onResume()
     {
@@ -368,6 +360,10 @@ public class Game3 extends ActionBarActivity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            Toast.makeText(Game3.this, "Your Score:\n" + String.format("%.2f", highestScore), Toast.LENGTH_LONG).show();
+            finish();
+            Intent i = new Intent(Game3.this, GamesMenu.class);
+            startActivity(i);
         }
 
     }

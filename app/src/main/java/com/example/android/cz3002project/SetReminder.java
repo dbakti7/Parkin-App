@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -34,6 +35,7 @@ public class SetReminder extends ActionBarActivity {
     private static String url_update_reminder_period = "http://10.27.44.239/update_reminder_period.php";
     NumberPicker np;
     private int reminderPeriod = 0;
+    int status = 0; // 0 if failed, 1 if success
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,10 @@ public class SetReminder extends ActionBarActivity {
 
     public void SetReminder(View view) {
         if(!email.equalsIgnoreCase("")) {
-            new UpdateReminderPeriod().execute();
+            if (CheckNetworkConnection.checknetwork(getApplicationContext()))
+                new UpdateReminderPeriod().execute();
+            else
+                Toast.makeText(SetReminder.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -129,14 +134,9 @@ public class SetReminder extends ActionBarActivity {
                 int success = json.getInt("success");
 
                 if (success == 1) {
-                    // successfully created product
-                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
-                    //startActivity(i);
-                    Log.e("UPDATE RP PROCESS", "SUCCESS");
-                    // closing this screen
-                    finish();
+                    status = 1;
                 } else {
-                    // failed to create product
+                    status = 0;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -151,6 +151,13 @@ public class SetReminder extends ActionBarActivity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            if(status == 1)
+                Toast.makeText(SetReminder.this, "Reminder Duration has been updated", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(SetReminder.this, "Some error occurred...", Toast.LENGTH_LONG).show();
+            finish();
+            Intent i = new Intent(SetReminder.this, MainMenu.class);
+            startActivity(i);
         }
 
     }
