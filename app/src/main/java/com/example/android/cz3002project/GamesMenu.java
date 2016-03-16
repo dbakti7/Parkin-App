@@ -50,5 +50,11 @@ public class GamesMenu extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void ViewStatistics(View view)
+    {
+        Intent intent = new Intent(GamesMenu.this, Statistics.class);
+        startActivity(intent);
+    }
+
 
 }

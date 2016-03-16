@@ -1,19 +1,44 @@
 package com.example.android.cz3002project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 
 public class MainMenu extends ActionBarActivity {
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    Button logOutButton;
+    TextView userNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+        String name = preferences.getString("Name", "");
+        logOutButton = (Button) findViewById(R.id.menuButtonLogOut);
+        userNameText = (TextView) findViewById(R.id.menuTVUserName);
+
+        if(!name.equalsIgnoreCase("")) {
+            logOutButton.setVisibility(View.VISIBLE);
+            userNameText.setText(name);
+        }
+        else {
+            logOutButton.setVisibility(View.GONE);
+            userNameText.setText("");
+        }
+
     }
 
     @Override
@@ -38,6 +63,10 @@ public class MainMenu extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    public void onBackPressed() {
+//    }
+
     public void SetReminder(View view)
     {
         Intent intent = new Intent(MainMenu.this, SetReminder.class);
@@ -47,6 +76,14 @@ public class MainMenu extends ActionBarActivity {
     public void PlayGames(View view)
     {
         Intent intent = new Intent(MainMenu.this, GamesMenu.class);
+        startActivity(intent);
+    }
+
+    public void LogOut(View view)
+    {
+        editor.putString("Name", "");
+        editor.apply();
+        Intent intent = new Intent(MainMenu.this, MainActivity.class);
         startActivity(intent);
     }
 }

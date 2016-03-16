@@ -319,10 +319,8 @@ public class Game3 extends ActionBarActivity {
                     JSONObject jo = user.getJSONObject(0);
 
                     average_game3 = Double.parseDouble(jo.getString("average_game3"));
-                    Log.e("Average game3", average_game3.toString());
                     play_time3 = Double.parseDouble(jo.getString("play_time3"));
                     total = average_game3 * play_time3 + highestScore;
-                    Log.e("Total", total.toString());
                     average_game3 = total / (play_time3 + 1);
 
                     // closing this screen
@@ -352,7 +350,6 @@ public class Game3 extends ActionBarActivity {
                     // successfully created product
                     //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
                     //startActivity(i);
-                    Log.e("UPDATE SCORE3 PROCESS", "SUCCESS");
                     // closing this screen
                     finish();
                 } else {

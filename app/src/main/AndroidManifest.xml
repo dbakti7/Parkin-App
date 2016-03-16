@@ -3,7 +3,9 @@
     package="com.example.android.cz3002project" >
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Internet Permission -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -46,7 +48,10 @@
             android:name=".DrawingGameActivity"
             android:label="@string/title_activity_drawing_game" >
         </activity>
+        <activity
+            android:name=".Statistics"
+            android:label="@string/title_activity_statistics" >
+        </activity>
     </application>
-    <!-- Internet Permission -->
 
 </manifest>

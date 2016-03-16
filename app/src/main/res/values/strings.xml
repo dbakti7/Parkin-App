@@ -10,4 +10,5 @@
     <string name="title_activity_games_menu">GamesMenu</string>
     <string name="title_activity_game3">Game3</string>
     <string name="title_activity_drawing_game">DrawingGameActivity</string>
+    <string name="title_activity_statistics">Statistics</string>
 </resources>

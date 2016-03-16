@@ -1,10 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:layout_height="match_parent"
+     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,17 +40,27 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="1"/>
 
     <Button
-        android:id="@+id/homeButtonRegister"
+        android:id="@+id/homeButtonEnter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Sign Up"
+        android:text="Enter"
         android:layout_margin="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:layout_gravity="center"
         android:background="@drawable/roundedbutton"
+        android:onClick="Enter"
+        />
+
+    <Button
+        android:id="@+id/homeButtonRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:layout_gravity="center"
+        android:background="@drawable/signupbutton"
         android:onClick="SignUp"
         />
 
@@ -60,38 +68,39 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:padding="10dp"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-        <Button
-            android:id="@+id/homeButtonSignIn"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/roundedbutton"
-            android:text="Log In"
-            android:onClick="LogIn"/>
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
+            <Button
+                android:id="@+id/homeButtonSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/signinbutton1"
+                android:onClick="LogIn"/>
+        </LinearLayout>
 
-        <TextView
+
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.1"/>
-
-        <Button
-            android:id="@+id/homeButtonPlayGames"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/roundedbutton"
             android:layout_weight="1"
-            android:text="Skip Now"
-            android:onClick="SkipNow"/>
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+            <Button
+                android:id="@+id/homeButtonPlayGames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/skipnowbutton"
+                android:onClick="SkipNow"/>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
+
     </LinearLayout>
 
 

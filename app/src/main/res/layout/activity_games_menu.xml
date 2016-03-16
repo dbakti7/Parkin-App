@@ -9,7 +9,7 @@
 
     <TextView android:text="Let's Play!" android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" android:gravity="center" android:textStyle="bold"
+        android:layout_weight="0.5" android:gravity="center" android:textStyle="bold"
         android:textSize="@dimen/abc_text_size_large_material" />
 
     <LinearLayout
@@ -67,7 +67,12 @@
             android:layout_weight="0.5"/>
 
     </LinearLayout>
-
+    <Button
+        android:text="Statistics"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:onClick="ViewStatistics"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"

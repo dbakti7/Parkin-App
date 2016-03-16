@@ -29,14 +29,13 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final String TAG_SUCCESS = "success";
-    private static final String TAG_USER = "user";
-    private static final String TAG_PASSWORD = "password";
-    private static final String TAG_NAME = "name";
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     Button logOutButton;
     Button signInButton;
+    Button signUpButton;
+    Button skipNowButton;
+    Button enterButton;
     TextView userNameText;
     JSONParser jParser = new JSONParser();
     private static String url_read_user = "http://10.27.44.239/read_user.php";
@@ -49,14 +48,24 @@ public class MainActivity extends ActionBarActivity {
         String name = preferences.getString("Name", "");
         logOutButton = (Button) findViewById(R.id.homeButtonLogOut);
         signInButton = (Button) findViewById(R.id.homeButtonSignIn);
+        signUpButton = (Button) findViewById(R.id.homeButtonRegister);
+        skipNowButton = (Button) findViewById(R.id.homeButtonPlayGames);
+        enterButton = (Button) findViewById(R.id.homeButtonEnter);
         userNameText = (TextView) findViewById(R.id.homeTVUserName);
         if(!name.equalsIgnoreCase("")) {
-            signInButton.setText("Change User");
+            signInButton.setVisibility(View.GONE);
+            signUpButton.setVisibility(View.GONE);
+            skipNowButton.setVisibility(View.GONE);
             logOutButton.setVisibility(View.VISIBLE);
+            enterButton.setVisibility(View.VISIBLE);
             userNameText.setText(name);
         }
         else {
+            signInButton.setVisibility(View.VISIBLE);
+            signUpButton.setVisibility(View.VISIBLE);
+            skipNowButton.setVisibility(View.VISIBLE);
             logOutButton.setVisibility(View.GONE);
+            enterButton.setVisibility(View.GONE);
             userNameText.setText("");
         }
         //new LoadAllProducts().execute();
@@ -92,12 +101,19 @@ public class MainActivity extends ActionBarActivity {
         //Refresh your stuff here
         String name = preferences.getString("Name", "");
         if(!name.equalsIgnoreCase("")) {
-            signInButton.setText("Change User");
+            signInButton.setVisibility(View.GONE);
+            signUpButton.setVisibility(View.GONE);
+            skipNowButton.setVisibility(View.GONE);
             logOutButton.setVisibility(View.VISIBLE);
+            enterButton.setVisibility(View.VISIBLE);
             userNameText.setText(name);
         }
         else {
+            signInButton.setVisibility(View.VISIBLE);
+            signUpButton.setVisibility(View.VISIBLE);
+            skipNowButton.setVisibility(View.VISIBLE);
             logOutButton.setVisibility(View.GONE);
+            enterButton.setVisibility(View.GONE);
             userNameText.setText("");
         }
     }
@@ -119,6 +135,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void Enter(View view) {
+        Intent intent = new Intent(MainActivity.this, MainMenu.class);
+        startActivity(intent);
+    }
+
     public void LogOut(View view)
     {
         editor.putString("Name", "");
@@ -127,68 +148,5 @@ public class MainActivity extends ActionBarActivity {
         startActivity(getIntent());
     }
 
-    class LoadAllProducts extends AsyncTask<String, String, String> {
-        String password = null, name = null;
-        /**
-         * Before starting background thread Show Progress Dialog
-         * */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
-        /**
-         * getting All products from url
-         * */
-        protected String doInBackground(String... args) {
-            // Building Parameters
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            // getting JSON string from URL
-            params.add(new BasicNameValuePair("email","\"sample@gmail.com\""));
-            JSONObject json = jParser.makeHttpRequest(url_read_user, "GET", params);
-
-            try {
-                // Checking for SUCCESS TAG
-                int success = json.getInt(TAG_SUCCESS);
-
-                if (success == 1) {
-                    // products found
-                    // Getting Array of Products
-                    JSONArray user = json.getJSONArray(TAG_USER);
-
-                    // looping through All Products
-                    for (int i = 0; i < user.length(); i++) {
-                        JSONObject c = user.getJSONObject(i);
-
-                        // Storing each json item in variable
-                        password = c.getString(TAG_PASSWORD);
-                        name = c.getString(TAG_NAME);
-
-
-                    }
-
-                } else {
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        /**
-         * After completing background task Dismiss the progress dialog
-         * **/
-        protected void onPostExecute(String file_url) {
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    /**
-                     * Updating parsed JSON data into ListView
-                     * */
-                }
-            });
-
-        }
-
-    }
 }

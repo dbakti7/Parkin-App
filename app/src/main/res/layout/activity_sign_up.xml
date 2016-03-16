@@ -1,10 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context="com.example.android.cz3002project.SignUpActivity">
+    android:layout_height="match_parent"  tools:context="com.example.android.cz3002project.SignUpActivity">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -23,6 +20,7 @@
         android:id="@+id/signUpEditTextName"
         android:inputType="text"
         android:hint="Name"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
@@ -31,6 +29,7 @@
         android:id="@+id/signUpEditTextEmail"
         android:inputType="textEmailAddress"
         android:hint="Email"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
@@ -38,6 +37,7 @@
     <EditText
         android:id="@+id/signUpEditTextPhoneNumber"
         android:inputType="phone"
+        android:gravity="center"
         android:hint="Phone Number"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -47,29 +47,32 @@
         android:id="@+id/signUpEditTextPassword"
         android:inputType="text"
         android:hint="Password"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:password="true"
         android:layout_weight="1"/>
 
     <EditText
         android:id="@+id/signUpEditTextRepeatPassword"
         android:inputType="text"
+        android:gravity="center"
         android:hint="Repeat Password"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:password="true"/>
 
     <Button
         android:id="@+id/signUpButtonSignUp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Sign Up!"
-        android:background="@drawable/roundedbutton"
+        android:layout_weight="1.5"
+        android:background="@drawable/signupbutton"
         android:onClick="UserSignUp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="0.5"/>
 </LinearLayout>
