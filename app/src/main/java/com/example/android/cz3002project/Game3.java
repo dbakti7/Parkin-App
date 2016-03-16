@@ -1,6 +1,9 @@
 package com.example.android.cz3002project;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 
 import android.os.Bundle;
@@ -15,6 +18,14 @@ import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,13 +35,13 @@ public class Game3 extends ActionBarActivity {
     Thread runner;
     private static double mEMA = 0.0;
     static final private double EMA_FILTER = 0.6;
-    public int seconds = 00;
-    public int minutes = 1;
+    public int seconds = 10;
+    public int minutes = 0;
 
     private ProgressBar progressBar;
     private double progressBarStatus = 0;
     private Handler progressBarHandler = new Handler();
-
+    private double highestScore;
 
     final Runnable updater = new Runnable(){
 
@@ -40,11 +51,27 @@ public class Game3 extends ActionBarActivity {
     };
     final Handler mHandler = new Handler();
 
+
+    private ProgressDialog pDialog;
+    JSONParser jsonParser = new JSONParser();
+    String email;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
+    private static String url_update_score3 = "http://10.27.44.239/update_score3.php";
+    private static String url_read_user = "http://10.27.44.239/read_user.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game3);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+        email = preferences.getString("Email", "");
+
+
+        highestScore = 0;
         mStatusView = (TextView) findViewById(R.id.status);
 
 
@@ -69,7 +96,7 @@ public class Game3 extends ActionBarActivity {
         }
 
         // Declare the timer
-        Timer t = new Timer();
+        final Timer t = new Timer();
 
         // Set the schedule function and rate
         t.scheduleAtFixedRate(new TimerTask() {
@@ -79,15 +106,21 @@ public class Game3 extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView tv = (TextView) findViewById(R.id.game3TextViewTimer);
-                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+
+                        if(minutes == 0 && seconds==0) {
+                            t.cancel();
+                            new UpdateScore3().execute();
+                            return;
+                        }
+
 
                         if (seconds == 0) {
-                            tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
                             seconds = 60;
                             minutes -= 1;
                         }
                         seconds -= 1;
+                        TextView tv = (TextView) findViewById(R.id.game3TextViewTimer);
+                        tv.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
                     }
                 });
             }
@@ -99,25 +132,23 @@ public class Game3 extends ActionBarActivity {
         // prepare for a progress bar dialog
         progressBar = (ProgressBar) findViewById(R.id.game3ProgressBarPB);
         progressBar.setProgress(0);
-        progressBar.setMax(100);
+
+        progressBar.setMax(85);
 
         //reset progress bar status
         progressBarStatus = 0;
 
 
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             public void run() {
-                while (progressBarStatus < 100) {
+                while (progressBarStatus < 85 && ((minutes >= 0) || (seconds > 0))) {
+                    if(minutes == 0 && seconds == 0) {
+                        break;
+                    }
+
 
                     // process some tasks
                     progressBarStatus = doSomeTasks();
-
-                    // your computer is too fast, sleep 1 second
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
 
                     // Update the progress bar
                     progressBarHandler.post(new Runnable() {
@@ -128,7 +159,7 @@ public class Game3 extends ActionBarActivity {
                 }
 
                 // ok, file is downloaded,
-                if (progressBarStatus >= 100) {
+                //if (progressBarStatus >= 85) {
 
                     // sleep 2 seconds, so that you can see the 100%
                     try {
@@ -136,16 +167,23 @@ public class Game3 extends ActionBarActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                     // close the progress bar dialog
-                }
+                //}
             }
-        }).start();
+        });
+        thread.start();
+
+
+
     }
 
 
     public double doSomeTasks() {
-        return soundDb(0.7746);
+
+        double currentScore = soundDb(0.7746);
+        if(currentScore > highestScore)
+            highestScore = currentScore;
+        return soundDb(currentScore);
     }
 
 
@@ -244,5 +282,96 @@ public class Game3 extends ActionBarActivity {
         double amp =  getAmplitude();
         mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
         return mEMA;
+    }
+
+
+    class UpdateScore3 extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Game3.this);
+            pDialog.setMessage("Updating Score for Game 3...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        /**
+         * Creating product
+         * */
+        protected String doInBackground(String... args) {
+
+            // Retrieving Data
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("email", email));
+            Double average_game3 = 0.0, play_time = 0.0, total = 0.0;
+            JSONObject prevData = jsonParser.makeHttpRequest(url_read_user, "GET", params);
+            try {
+                int success = prevData.getInt("success");
+
+                if (success == 1) {
+                    JSONArray user = prevData.getJSONArray("user");
+                    JSONObject jo = user.getJSONObject(0);
+
+                    average_game3 = Double.parseDouble(jo.getString("average_game3"));
+                    Log.e("Average game3", average_game3.toString());
+                    play_time = Double.parseDouble(jo.getString("play_time"));
+                    total = average_game3 * play_time + highestScore;
+                    Log.e("Total", total.toString());
+                    average_game3 = total / (play_time + 1);
+
+                    // closing this screen
+                } else {
+                    // failed to create product
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Sending Data
+            params.add(new BasicNameValuePair("score3", ((Double)highestScore).toString()));
+            params.add(new BasicNameValuePair("average_game3", (average_game3.toString())));
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_update_score3,
+                    "GET", params);
+
+            // check log cat fro response
+            //Log.d("Create Response", json.toString());
+
+            // check for success tag
+            try {
+                int success = json.getInt("success");
+
+                if (success == 1) {
+                    // successfully created product
+                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
+                    //startActivity(i);
+                    Log.e("UPDATE SCORE3 PROCESS", "SUCCESS");
+                    // closing this screen
+                    finish();
+                } else {
+                    // failed to create product
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+
     }
 }

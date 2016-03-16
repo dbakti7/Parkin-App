@@ -1,18 +1,39 @@
 package com.example.android.cz3002project;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SetReminder extends ActionBarActivity {
+    private ProgressDialog pDialog;
+    JSONParser jsonParser = new JSONParser();
+    String email;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
+    private static String url_update_reminder_period = "http://10.27.44.239/update_reminder_period.php";
     NumberPicker np;
-    private int valueSelected = 0;
+    private int reminderPeriod = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +48,13 @@ public class SetReminder extends ActionBarActivity {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 // TODO Auto-generated method stub
-                valueSelected = newVal;
+                reminderPeriod = newVal;
             }
         });
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+        email = preferences.getString("Email", "");
     }
 
     @Override
@@ -52,5 +77,73 @@ public class SetReminder extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void SetReminder(View view) {
+        if(!email.equalsIgnoreCase("")) {
+            new UpdateReminderPeriod().execute();
+        }
+    }
+
+    class UpdateReminderPeriod extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SetReminder.this);
+            pDialog.setMessage("Updating Reminder Period...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        /**
+         * Creating product
+         * */
+        protected String doInBackground(String... args) {
+
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("email", email));
+            params.add(new BasicNameValuePair("reminder_period", ((Integer)reminderPeriod).toString()));
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_update_reminder_period,
+                    "GET", params);
+
+            // check log cat fro response
+            //Log.d("Create Response", json.toString());
+
+            // check for success tag
+            try {
+                int success = json.getInt("success");
+
+                if (success == 1) {
+                    // successfully created product
+                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
+                    //startActivity(i);
+                    Log.e("UPDATE RP PROCESS", "SUCCESS");
+                    // closing this screen
+                    finish();
+                } else {
+                    // failed to create product
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+
     }
 }

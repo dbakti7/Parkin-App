@@ -65,7 +65,8 @@
         android:layout_weight="1"
         android:text="Set Reminder"
         android:layout_margin="@dimen/abc_action_bar_content_inset_material"
-        android:background="@drawable/roundedbutton"/>
+        android:background="@drawable/roundedbutton"
+        android:onClick="SetReminder"/>
 
     <TextView
         android:layout_width="match_parent"
