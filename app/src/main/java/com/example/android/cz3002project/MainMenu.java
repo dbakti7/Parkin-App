@@ -35,7 +35,7 @@ public class MainMenu extends ActionBarActivity {
         // if user is currently logged in, show log out button
         if(!name.equalsIgnoreCase("")) {
             logOutButton.setVisibility(View.VISIBLE);
-            userNameText.setText(name);
+            userNameText.setText("Hi, " + name + "!");
         }
         else {
             logOutButton.setVisibility(View.GONE);

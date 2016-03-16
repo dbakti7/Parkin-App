@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity {
             skipNowButton.setVisibility(View.GONE);
             logOutButton.setVisibility(View.VISIBLE);
             enterButton.setVisibility(View.VISIBLE);
-            userNameText.setText(name);
+            userNameText.setText("Hi, " + name + "!");
         }
         // is user is not logged in into the system
         else {
@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
             skipNowButton.setVisibility(View.GONE);
             logOutButton.setVisibility(View.VISIBLE);
             enterButton.setVisibility(View.VISIBLE);
-            userNameText.setText(name);
+            userNameText.setText("Hi, " + name + "!");
         }
         // is user is not logged in into system
         else {

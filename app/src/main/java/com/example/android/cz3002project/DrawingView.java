@@ -208,11 +208,13 @@ public class DrawingView extends View {
                 Log.d("SCORE", "score=" + score);
 
                 // update score into database if the user log in and there is internet connection
-                if (!email.equals("") && CheckNetworkConnection.checknetwork(this.getContext()))
-                    new UpdateScore2().execute();
-                else
-                    Toast.makeText(this.getContext(), "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
-                com.example.android.cz3002project.DrawingGameActivity.scoreTextView.setText("Score: "+score);
+                if(!email.equals("")) {
+                    if (CheckNetworkConnection.checknetwork(this.getContext()))
+                        new UpdateScore2().execute();
+                    else
+                        Toast.makeText(this.getContext(), "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
+                }
+                com.example.android.cz3002project.DrawingGameActivity.scoreTextView.setText("Score: " + score);
                 break;
             default:
                 return false;
