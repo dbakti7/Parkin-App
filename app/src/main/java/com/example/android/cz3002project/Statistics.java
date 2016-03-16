@@ -23,7 +23,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class is used to handle Statistics Activity
+ */
 public class Statistics extends ActionBarActivity {
     SharedPreferences preferences;
     String email;
@@ -31,8 +33,11 @@ public class Statistics extends ActionBarActivity {
 
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
+
+    // url to handle database query with PHP
     private static String url_read_user = "http://10.27.44.239/read_user.php";
 
+    // highest score and average score for each game
     Double[] score = new Double[3];
     Double[] averageScore = new Double[3];
 
@@ -40,14 +45,20 @@ public class Statistics extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        // get shared preferences data
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email = preferences.getString("Email", "");
         editor = preferences.edit();
+
+        // if user is logged in into the system
         if(!email.equalsIgnoreCase(""))
+            // if there is internet connection, retrieve the statistics from database
             if (CheckNetworkConnection.checknetwork(getApplicationContext()))
                 new RetrieveData().execute();
             else
                 Toast.makeText(Statistics.this, "No Internet Connection!", Toast.LENGTH_LONG).show();
+        // if user is not logged in into the system, show 0 for all scores
         else {
             for(int i = 0;i<3;++i) {
                 score[i] = averageScore[i] = 0.0;
@@ -100,6 +111,9 @@ public class Statistics extends ActionBarActivity {
         startActivity(intent);
     }
 
+    /**
+     * Async class to handle database query, which is retrieving user scores
+     */
     class RetrieveData extends AsyncTask<String, String, String> {
 
         /**
@@ -117,7 +131,7 @@ public class Statistics extends ActionBarActivity {
         }
 
         /**
-         * Creating product
+         * Getting user's data
          * */
         protected String doInBackground(String... args) {
 
@@ -125,38 +139,30 @@ public class Statistics extends ActionBarActivity {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email", email));
 
-
             // getting JSON Object
-            // Note that create product url accepts POST method
+            // get user's data (scores for each game)
             JSONObject json = jsonParser.makeHttpRequest(url_read_user,
                     "GET", params);
 
-            // check log cat fro response
-            //Log.d("Create Response", json.toString());
 
             // check for success tag
             try {
                 int success = json.getInt("success");
 
                 if (success == 1) {
-                    // successfully created product
-                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
-                    //startActivity(i);
                     JSONArray user = json.getJSONArray("user");
                     JSONObject jo = user.getJSONObject(0);
-                    Log.e("Enter here", "success");
+
                     // retrieve score for each game
                     for(Integer i = 1;i<=3;++i)
                         score[i-1] = Double.parseDouble(jo.getString("score"+i.toString()));
-                    Log.e("Score",score[2].toString());
+
                     // retrieve average score for each game
                     for(Integer i = 1;i<=3;++i)
                         averageScore[i-1] = Double.parseDouble(jo.getString("average_game"+i.toString()));
 
-                    // closing this screen
-                    //finish();
                 } else {
-                    // failed to create product
+                    // some error occurred
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -170,6 +176,8 @@ public class Statistics extends ActionBarActivity {
          * **/
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once done
+
+            // display the highest score and average score for each game
             TextView updateScore;
             updateScore = (TextView) findViewById(R.id.statisticsTVScore1);
             updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", score[0]));
@@ -184,13 +192,13 @@ public class Statistics extends ActionBarActivity {
             updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[1]));
             updateScore = (TextView) findViewById(R.id.statisticsTVAvgScore3);
             updateScore.setText(updateScore.getText() + "\n" + String.format("%.2f", averageScore[2]));
-
             pDialog.dismiss();
         }
 
     }
     public void OK(View view)
     {
+        // go to Main Menu
         Intent intent = new Intent(Statistics.this, MainMenu.class);
         startActivity(intent);
     }

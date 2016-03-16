@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
+/**
+ * This class is used to handle activity_games_menu which is the menu that displays the list
+ * of games
+ */
 public class GamesMenu extends ActionBarActivity {
 
     @Override
@@ -34,7 +37,6 @@ public class GamesMenu extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -47,21 +49,22 @@ public class GamesMenu extends ActionBarActivity {
 
     public void PlayGame2(View view)
     {
+        // play Shape Tracing
         Intent intent = new Intent(GamesMenu.this, DrawingGameActivity.class);
         startActivity(intent);
     }
 
     public void PlayGame3(View view)
     {
-        Intent intent = new Intent(GamesMenu.this, Game3.class);
+        // play Word Voicing Game
+        Intent intent = new Intent(GamesMenu.this, WordVoicing.class);
         startActivity(intent);
     }
 
     public void ViewStatistics(View view)
     {
+        // View user's statistics
         Intent intent = new Intent(GamesMenu.this, Statistics.class);
         startActivity(intent);
     }
-
-
 }

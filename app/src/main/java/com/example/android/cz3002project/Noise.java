@@ -2,7 +2,6 @@ package com.example.android.cz3002project;
 
 import android.app.Activity;
 
-import android.app.Activity;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +9,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
-
+/**
+ * This class is auxiliary class to handle audio input from microphone
+ * It is used to help Word Voicing game
+ */
 public class Noise extends Activity {
 
     TextView mStatusView;

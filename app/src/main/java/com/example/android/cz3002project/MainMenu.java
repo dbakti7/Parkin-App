@@ -5,14 +5,16 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
+/**
+ * This class is used to handle Main Menu which displays the option of either
+ * playing games or set reminder
+ */
 public class MainMenu extends ActionBarActivity {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -30,6 +32,7 @@ public class MainMenu extends ActionBarActivity {
         logOutButton = (Button) findViewById(R.id.menuButtonLogOut);
         userNameText = (TextView) findViewById(R.id.menuTVUserName);
 
+        // if user is currently logged in, show log out button
         if(!name.equalsIgnoreCase("")) {
             logOutButton.setVisibility(View.VISIBLE);
             userNameText.setText(name);
@@ -63,10 +66,6 @@ public class MainMenu extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//    }
-
     @Override
     public void onBackPressed()
     {
@@ -76,21 +75,26 @@ public class MainMenu extends ActionBarActivity {
 
     public void SetReminder(View view)
     {
+        // go to set reminder page
         Intent intent = new Intent(MainMenu.this, SetReminder.class);
         startActivity(intent);
     }
 
     public void PlayGames(View view)
     {
+        // go to Games Menu page
         Intent intent = new Intent(MainMenu.this, GamesMenu.class);
         startActivity(intent);
     }
 
     public void LogOut(View view)
     {
+        // Log Out process
+        // update the shared preferences
         editor.putString("Name", "");
         editor.putString("Email", "");
         editor.apply();
+        // go to Main Activity
         Intent intent = new Intent(MainMenu.this, MainActivity.class);
         startActivity(intent);
     }

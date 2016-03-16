@@ -1,12 +1,14 @@
 package com.example.android.cz3002project;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+/**
+ * This class is used to handle Shape Tracing Activity
+ */
 public class DrawingGameActivity extends ActionBarActivity {
 
     public static TextView scoreTextView;

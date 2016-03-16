@@ -1,31 +1,15 @@
 package com.example.android.cz3002project;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -37,14 +21,14 @@ public class MainActivity extends ActionBarActivity {
     Button skipNowButton;
     Button enterButton;
     TextView userNameText;
-    JSONParser jParser = new JSONParser();
-    private static String url_read_user = "http://10.27.44.239/read_user.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
+
         String name = preferences.getString("Name", "");
         logOutButton = (Button) findViewById(R.id.homeButtonLogOut);
         signInButton = (Button) findViewById(R.id.homeButtonSignIn);
@@ -52,6 +36,8 @@ public class MainActivity extends ActionBarActivity {
         skipNowButton = (Button) findViewById(R.id.homeButtonPlayGames);
         enterButton = (Button) findViewById(R.id.homeButtonEnter);
         userNameText = (TextView) findViewById(R.id.homeTVUserName);
+
+        // If user is currently logged in into the system
         if(!name.equalsIgnoreCase("")) {
             signInButton.setVisibility(View.GONE);
             signUpButton.setVisibility(View.GONE);
@@ -60,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
             enterButton.setVisibility(View.VISIBLE);
             userNameText.setText(name);
         }
+        // is user is not logged in into the system
         else {
             signInButton.setVisibility(View.VISIBLE);
             signUpButton.setVisibility(View.VISIBLE);
@@ -98,6 +85,8 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         //Refresh your stuff here
         String name = preferences.getString("Name", "");
+
+        // if user is currently logged in into the system
         if(!name.equalsIgnoreCase("")) {
             signInButton.setVisibility(View.GONE);
             signUpButton.setVisibility(View.GONE);
@@ -106,6 +95,7 @@ public class MainActivity extends ActionBarActivity {
             enterButton.setVisibility(View.VISIBLE);
             userNameText.setText(name);
         }
+        // is user is not logged in into system
         else {
             signInButton.setVisibility(View.VISIBLE);
             signUpButton.setVisibility(View.VISIBLE);
@@ -118,34 +108,39 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        // exit from application
         moveTaskToBack(true);
     }
 
-
     public void SignUp(View view)
     {
+        // Register for new user account
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
     }
 
     public void LogIn(View view)
     {
+        // Log in
         Intent intent = new Intent(MainActivity.this, LogIn.class);
         startActivity(intent);
     }
 
     public void SkipNow(View view) {
+        // Proceed without logging in
         Intent intent = new Intent(MainActivity.this, MainMenu.class);
         startActivity(intent);
     }
 
     public void Enter(View view) {
+        // Proceed to Main Menu
         Intent intent = new Intent(MainActivity.this, MainMenu.class);
         startActivity(intent);
     }
 
     public void LogOut(View view)
     {
+        // Log Out
         editor.putString("Name", "");
         editor.putString("Email", "");
         editor.apply();

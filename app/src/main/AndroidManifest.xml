@@ -44,7 +44,7 @@
             android:label="@string/title_activity_games_menu" >
         </activity>
         <activity
-            android:name=".Game3"
+            android:name=".WordVoicing"
             android:label="@string/title_activity_game3" >
         </activity>
         <activity

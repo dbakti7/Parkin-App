@@ -30,10 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
-
 /**
- * TODO: document your custom view class.
+ * This class is used to handle the drawing on Shape Tracing Game
  */
 public class DrawingView extends View {
 
@@ -46,8 +44,6 @@ public class DrawingView extends View {
     private int shapeColor = 0xFF000000;
     private Path innerCircle;
     private Path outerCircle;
-
-
 
     //drawing path
     private Path drawPath;
@@ -65,7 +61,6 @@ public class DrawingView extends View {
     // difference color
     private int differenceColor = 0xFFFF0000;
 
-
     //canvas
     private Canvas drawCanvas;
     //canvas bitmap
@@ -77,6 +72,7 @@ public class DrawingView extends View {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
+    // url to access the database with PHP
     private static String url_update_score2 = "http://10.27.44.239/update_score2.php";
     private static String url_read_user = "http://10.27.44.239/read_user.php";
 
@@ -94,7 +90,6 @@ public class DrawingView extends View {
         email = preferences.getString("Email", "");
 
     }
-
 
     private void setupShapePath() {
         shapePath = new Path();
@@ -146,9 +141,7 @@ public class DrawingView extends View {
         float centerY = h / 2;
         float radius = w / 4;
 
-
         shapePath = circlePath(centerX, centerY, radius, shapeLineWidth, innerCircle, outerCircle);
-
         drawCanvas.drawPath(shapePath, shapePaint);
     }
 
@@ -157,22 +150,6 @@ public class DrawingView extends View {
         //draw view
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
-
-        //canvas.drawPath(outerDifferencePath, differencePaint);
-        //canvas.drawPath(innerDifferencePath, differencePaint);
-
-//        for (Point point : randomPoints) {
-//            Rect tinyRect = new Rect(point.x, point.y, point.x + 1, point.y + 1);
-//            Paint paint = new Paint();
-//            paint.setColor(0xFF000000);
-//            paint.setAntiAlias(true);
-//            paint.setStrokeWidth(1);
-//            paint.setStyle(Paint.Style.STROKE);
-//            paint.setStrokeJoin(Paint.Join.ROUND);
-//            paint.setStrokeCap(Paint.Cap.ROUND);
-//
-//            canvas.drawRect(tinyRect, paint);
-//        }
     }
 
     @Override
@@ -192,9 +169,6 @@ public class DrawingView extends View {
                 drawPath.lineTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
-//                drawCanvas.drawPath(drawPath, drawPaint);
-
-//                drawPath.close();
 
                 outerDifferencePath.op(drawPath, outerCircle, Path.Op.DIFFERENCE);
                 innerDifferencePath.op(innerCircle, drawPath, Path.Op.DIFFERENCE);
@@ -223,19 +197,18 @@ public class DrawingView extends View {
                 innerRegion.getBounds(innerRegionBounds);
                 Log.d("REGION", "inner region bounds bottom:" + innerRegionBounds.bottom + " left:" + innerRegionBounds.left + " right: " + innerRegionBounds.right + " top: " + innerRegionBounds.top);
 
-
                 float outerDifferenceArea = monteCarloArea(outerRegion);
                 Log.d("MONTECARLOAREA", "outerArea=" + outerDifferenceArea);
 
                 float innerDifferenceArea = monteCarloArea(innerRegion);
                 Log.d("MONTECARLOAREA", "innerArea=" + innerDifferenceArea);
 
-//                drawPath.reset();
-
                 int uncorrectedScore = (int) (100 - Math.ceil(outerDifferenceArea) - Math.ceil(innerDifferenceArea));
                 score = (uncorrectedScore >= 0) ? uncorrectedScore : 0;
                 Log.d("SCORE", "score=" + score);
-                if (CheckNetworkConnection.checknetwork(this.getContext()))
+
+                // update score into database if the user log in and there is internet connection
+                if (!email.equals("") && CheckNetworkConnection.checknetwork(this.getContext()))
                     new UpdateScore2().execute();
                 else
                     Toast.makeText(this.getContext(), "No Internet Connection to upload your score!", Toast.LENGTH_LONG).show();
@@ -285,16 +258,13 @@ public class DrawingView extends View {
                 pointsInsideRegionCount++;
             }
         }
-
-
         float area = (pointsInsideRegionCount / testPointsCount) * 1000;
-
-
-
         return area;
     }
 
-
+    /**
+     * Async class to handle database
+     */
     class UpdateScore2 extends AsyncTask<String, String, String> {
 
         /**
@@ -311,16 +281,19 @@ public class DrawingView extends View {
         }
 
         /**
-         * Creating product
+         * Updating the score for Shape Tracing game
          * */
         protected String doInBackground(String... args) {
 
-            // Retrieving Data
+            // Retrieving the previous data for this game
+
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email", email));
+
             Double average_game2 = 0.0, play_time2 = 0.0, total = 0.0;
             JSONObject prevData = jsonParser.makeHttpRequest(url_read_user, "GET", params);
+
             try {
                 int success = prevData.getInt("success");
 
@@ -329,49 +302,23 @@ public class DrawingView extends View {
                     JSONObject jo = user.getJSONObject(0);
 
                     average_game2 = Double.parseDouble(jo.getString("average_game2"));
-                    Log.e("Average game2", average_game2.toString());
                     play_time2 = Double.parseDouble(jo.getString("play_time2"));
                     total = average_game2 * play_time2 + score;
-                    Log.e("Total", total.toString());
-                    average_game2 = total / (play_time2 + 1);
-
-                    // closing this screen
+                    average_game2 = total / (play_time2 + 1); // update average score for this game
                 } else {
-                    // failed to create product
+                    // connection failed
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            // Sending Data
+            // Sending Data to database
             params.add(new BasicNameValuePair("score2", ((Integer)score).toString()));
             params.add(new BasicNameValuePair("average_game2", (average_game2.toString())));
-            // getting JSON Object
-            // Note that create product url accepts POST method
+
+            // getting JSON Object to check the status
             JSONObject json = jsonParser.makeHttpRequest(url_update_score2,
                     "GET", params);
-
-            // check log cat fro response
-            //Log.d("Create Response", json.toString());
-
-            // check for success tag
-            try {
-                int success = json.getInt("success");
-
-                if (success == 1) {
-                    // successfully created product
-                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
-                    //startActivity(i);
-                    Log.e("UPDATE SCORE2 PROCESS", "SUCCESS");
-                    // closing this screen
-//                    finish();
-                } else {
-                    // failed to create product
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
             return null;
         }
 
