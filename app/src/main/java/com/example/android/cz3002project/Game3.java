@@ -309,7 +309,7 @@ public class Game3 extends ActionBarActivity {
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("email", email));
-            Double average_game3 = 0.0, play_time = 0.0, total = 0.0;
+            Double average_game3 = 0.0, play_time3 = 0.0, total = 0.0;
             JSONObject prevData = jsonParser.makeHttpRequest(url_read_user, "GET", params);
             try {
                 int success = prevData.getInt("success");
@@ -320,10 +320,10 @@ public class Game3 extends ActionBarActivity {
 
                     average_game3 = Double.parseDouble(jo.getString("average_game3"));
                     Log.e("Average game3", average_game3.toString());
-                    play_time = Double.parseDouble(jo.getString("play_time"));
-                    total = average_game3 * play_time + highestScore;
+                    play_time3 = Double.parseDouble(jo.getString("play_time3"));
+                    total = average_game3 * play_time3 + highestScore;
                     Log.e("Total", total.toString());
-                    average_game3 = total / (play_time + 1);
+                    average_game3 = total / (play_time3 + 1);
 
                     // closing this screen
                 } else {

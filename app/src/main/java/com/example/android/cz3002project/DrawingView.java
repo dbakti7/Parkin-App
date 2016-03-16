@@ -1,12 +1,16 @@
 package com.example.android.cz3002project;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +19,14 @@ import android.graphics.Bitmap;
 import android.graphics.Path;
 import android.view.MotionEvent;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -59,6 +70,14 @@ public class DrawingView extends View {
     //canvas bitmap
     private Bitmap canvasBitmap;
 
+    private ProgressDialog pDialog;
+    JSONParser jsonParser = new JSONParser();
+    String email;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
+    private static String url_update_score2 = "http://10.27.44.239/update_score2.php";
+    private static String url_read_user = "http://10.27.44.239/read_user.php";
 
     public DrawingView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -69,6 +88,9 @@ public class DrawingView extends View {
 
         randomPoints = new ArrayList<Point>();
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        editor = preferences.edit();
+        email = preferences.getString("Email", "");
 
     }
 
@@ -212,7 +234,7 @@ public class DrawingView extends View {
                 int uncorrectedScore = (int) (100 - Math.ceil(outerDifferenceArea) - Math.ceil(innerDifferenceArea));
                 score = (uncorrectedScore >= 0) ? uncorrectedScore : 0;
                 Log.d("SCORE", "score=" + score);
-
+                new UpdateScore2().execute();
                 com.example.android.cz3002project.DrawingGameActivity.scoreTextView.setText("Score: "+score);
                 break;
             default:
@@ -268,5 +290,95 @@ public class DrawingView extends View {
         return area;
     }
 
+
+    class UpdateScore2 extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getContext());
+            pDialog.setMessage("Updating Score for Game 2...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        /**
+         * Creating product
+         * */
+        protected String doInBackground(String... args) {
+
+            // Retrieving Data
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("email", email));
+            Double average_game2 = 0.0, play_time2 = 0.0, total = 0.0;
+            JSONObject prevData = jsonParser.makeHttpRequest(url_read_user, "GET", params);
+            try {
+                int success = prevData.getInt("success");
+
+                if (success == 1) {
+                    JSONArray user = prevData.getJSONArray("user");
+                    JSONObject jo = user.getJSONObject(0);
+
+                    average_game2 = Double.parseDouble(jo.getString("average_game2"));
+                    Log.e("Average game2", average_game2.toString());
+                    play_time2 = Double.parseDouble(jo.getString("play_time2"));
+                    total = average_game2 * play_time2 + score;
+                    Log.e("Total", total.toString());
+                    average_game2 = total / (play_time2 + 1);
+
+                    // closing this screen
+                } else {
+                    // failed to create product
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Sending Data
+            params.add(new BasicNameValuePair("score2", ((Integer)score).toString()));
+            params.add(new BasicNameValuePair("average_game2", (average_game2.toString())));
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_update_score2,
+                    "GET", params);
+
+            // check log cat fro response
+            //Log.d("Create Response", json.toString());
+
+            // check for success tag
+            try {
+                int success = json.getInt("success");
+
+                if (success == 1) {
+                    // successfully created product
+                    //Intent i = new Intent(getApplicationContext(), AllProductsActivity.class);
+                    //startActivity(i);
+                    Log.e("UPDATE SCORE2 PROCESS", "SUCCESS");
+                    // closing this screen
+//                    finish();
+                } else {
+                    // failed to create product
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+
+    }
 
 }
